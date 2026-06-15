@@ -488,7 +488,7 @@ function TransactionsTab({ engagementId, onUploaded }: { engagementId: string; o
             <DialogTrigger render={<Button className="bg-blue-600 hover:bg-blue-700 text-slate-900 h-8 text-xs gap-1.5 shadow-lg glow-primary shadow-blue-500/20" />}>
               <Upload className="w-3 h-3" /> Upload Transactions
             </DialogTrigger>
-            <DialogContent className="bg-white border-slate-200 sm:max-w-xl text-slate-900">
+            <DialogContent className="bg-white border-slate-200 sm:max-w-xl text-slate-900 max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle className="text-slate-900">Upload Transactions</DialogTitle>
               </DialogHeader>
