@@ -11,7 +11,7 @@ import {
 import { Shield, Search, Settings, Check, X } from "lucide-react";
 
 export default function SuperadminPage() {
-  const { user, loading } = useAuth();
+  const { user, isLoading } = useAuth();
   const router = useRouter();
   
   const [organizations, setOrganizations] = useState<any[]>([]);
@@ -21,14 +21,14 @@ export default function SuperadminPage() {
 
   // Superadmin check
   useEffect(() => {
-    if (!loading) {
+    if (!isLoading) {
       if (!user) {
         router.push("/login");
       } else if (!user.is_superadmin) {
         router.push("/dashboard");
       }
     }
-  }, [user, loading, router]);
+  }, [user, isLoading, router]);
 
   useEffect(() => {
     if (user?.is_superadmin) {
