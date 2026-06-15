@@ -87,7 +87,7 @@ export default function SuperadminPage() {
     { key: "supply_chain_audit", name: "Supply Chain Audit", coming_soon: true }
   ];
 
-  if (loading || !user || !user.is_superadmin) {
+  if (isLoading || !user || !user.is_superadmin) {
     return <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center">Loading...</div>;
   }
 
