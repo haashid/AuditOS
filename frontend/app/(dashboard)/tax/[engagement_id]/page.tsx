@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   UploadCloud, FileJson, FileSpreadsheet, CheckCircle2,
-  AlertTriangle, RefreshCw, FileText, Download, Bot, Check, ShieldAlert
+  AlertTriangle, RefreshCw, FileText, Download, Bot, Check, ShieldAlert, BrainCircuit
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
