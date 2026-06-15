@@ -50,6 +50,7 @@ export interface UserOut {
   role: string;
   org_id: string;
   is_active: boolean;
+  is_superadmin?: boolean;
   onboarding_completed: boolean;
   created_at: string;
 }
