@@ -1408,7 +1408,7 @@ function WorkpapersTab({ engagementId }: { engagementId: string }) {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => downloadAsWord(wp.full_content, wp.audit_area)}
+                      onClick={() => downloadAsWord(wp.full_content || "", wp.audit_area)}
                       className="absolute top-4 right-4 text-slate-600 bg-white"
                     >
                       <Download className="w-4 h-4 mr-2" /> Download Word
