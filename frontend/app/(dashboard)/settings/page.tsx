@@ -19,7 +19,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 }
 
 export default function SettingsPage() {
-  const { user } = useAuth();
+  const { user, hasModule } = useAuth();
   const [loading, setLoading] = useState(false);
 
   // Integration states for Demo
@@ -205,7 +205,7 @@ export default function SettingsPage() {
                       <p className="text-xs text-slate-500">Core module — always active</p>
                     </div>
                   </div>
-                  {user?.hasModule && user.hasModule("internal_audit") && (
+                  {hasModule("internal_audit") && (
                     <div className="flex items-start gap-3">
                       <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
@@ -214,7 +214,16 @@ export default function SettingsPage() {
                       </div>
                     </div>
                   )}
-                  {user?.hasModule && user.hasModule("tax_audit") && (
+                  {hasModule("ifc_audit") && (
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-medium text-slate-900">IFC Audit</p>
+                        <p className="text-xs text-slate-500">Active</p>
+                      </div>
+                    </div>
+                  )}
+                  {hasModule("tax_audit") && (
                     <div className="flex items-start gap-3">
                       <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
