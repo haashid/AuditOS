@@ -1,4 +1,5 @@
-# AuditOS AI — Month 1
+# AuditOS AI 
+
 
 AI-powered audit operating system. Month 1 foundation: auth, engagements, transaction upload with anomaly detection, and dashboard.
 
