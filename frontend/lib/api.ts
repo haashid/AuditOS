@@ -199,6 +199,7 @@ export async function apiUploadFile(
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ detail: "Upload failed" }));
+    console.error("UPLOAD ERROR DETAILS:", error);
     throw new Error(error.detail || `HTTP ${res.status}`);
   }
 
