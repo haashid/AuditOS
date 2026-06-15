@@ -540,6 +540,8 @@ export async function apiPortalRespondFinding(token: string, findingId: string, 
 export interface ConnectorStatus {
   quickbooks: boolean;
   xero: boolean;
+  zoho: boolean;
+  tally: boolean;
 }
 
 export async function apiGetConnectorStatus(engagementId: string): Promise<ConnectorStatus> {
