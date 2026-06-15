@@ -1,0 +1,9 @@
+date,doc_no,account_code,account_name,debit,credit,description,posted_by
+2024-01-15,JE-001,1001,Cash,50000,,Payment received,john.smith
+2024-01-20,JE-002,2001,Accounts Payable,,100000,,
+2024-01-21,JE-003,3001,Revenue,,75000,Q1 revenue booking,jane.doe
+2024-01-27,JE-004,1001,Cash,25000,,Weekend adjustment,
+2024-01-28,JE-005,4001,Expenses,200000,,Round payment to vendor,mike.jones
+2024-02-01,JE-006,2001,Accounts Payable,,50000,Vendor payment Feb,sara.lee
+2024-02-10,JE-007,1001,Cash,1000000,,Large transfer,admin
+2024-02-15,JE-008,3001,Revenue,,30000,Feb revenue,jane.doe

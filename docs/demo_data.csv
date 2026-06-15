@@ -1,0 +1,19 @@
+date,doc_no,account_code,account_name,debit,credit,description,posted_by
+2024-01-15,JE-001,1001,Cash,50000,,Payment from GlobalTech Ltd,priya.sharma
+2024-01-20,JE-002,2001,Accounts Payable,,100000,Supplier payment - Q1,rahul.gupta
+2024-01-21,JE-003,3001,Revenue,,75000,January revenue booking,priya.sharma
+2024-01-27,JE-004,1001,Cash,25000,,Adjustment entry,,
+2024-01-28,JE-005,4001,Vendor Expenses,200000,,Payment to Sunrise Traders,
+2024-02-01,JE-006,2001,Accounts Payable,,50000,Vendor payment Feb,anjali.singh
+2024-02-10,JE-007,1001,Cash,1000000,,Large fund transfer,admin
+2024-02-15,JE-008,3001,Revenue,,30000,Feb revenue,priya.sharma
+2024-02-17,JE-009,4001,Vendor Expenses,9800,,Sunrise Traders payment 1,rahul.gupta
+2024-02-18,JE-010,4001,Vendor Expenses,9750,,Sunrise Traders payment 2,rahul.gupta
+2024-02-19,JE-011,4001,Vendor Expenses,9900,,Sunrise Traders payment 3,rahul.gupta
+2024-02-22,JE-012,5001,Payroll,85000,,February payroll,hr.admin
+2024-02-22,JE-013,5001,Payroll,85000,,February payroll,hr.admin
+2024-03-01,JE-014,3001,Revenue,,120000,March revenue booking,priya.sharma
+2024-03-15,JE-015,4001,Vendor Expenses,500000,,Round payment - Apex Corp,
+2024-03-31,JE-016,1001,Cash,75000,,Quarter end adjustment,admin
+2024-04-06,JE-017,4001,Vendor Expenses,9950,,Sunrise Traders payment 4,rahul.gupta
+2024-04-07,JE-018,4001,Vendor Expenses,9800,,Sunrise Traders payment 5,rahul.gupta

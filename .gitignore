@@ -1,0 +1,50 @@
+# Node
+node_modules/
+.next/
+dist/
+build/
+.turbo/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.pytest_cache/
+.poetry/
+.pdm/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environments and Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+*.cert
+
+# Database & Docker data
+*.sqlite3
+*.db
+postgres-data/
+pgdata/
+docker_postgres_data/
+
+# Uploads & temporary logs
+uploads/
+*.log
+
+# IDEs
+.vscode/
+.idea/
+
+# Root level screenshot (optional to ignore)
+ChatGPT Image Jun 13, 2026, 01_11_54 PM.png
