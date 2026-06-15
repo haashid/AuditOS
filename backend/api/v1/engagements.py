@@ -113,9 +113,19 @@ def upload_transactions(
     # Parse with pandas
     try:
         if filename.endswith(".csv"):
-            df = pd.read_csv(file_path)
+            try:
+                df = pd.read_csv(file_path)
+            except UnicodeDecodeError:
+                # Fallback for Excel-saved CSVs on Windows
+                df = pd.read_csv(file_path, encoding='cp1252')
+            except pd.errors.EmptyDataError:
+                raise ValueError("File is empty or contains no data")
         else:
             df = pd.read_excel(file_path)
+            
+        if df.empty:
+            raise ValueError("File contains no data rows")
+            
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Could not parse file: {str(e)}")
 
@@ -144,21 +154,27 @@ def upload_transactions(
             except (TypeError, ValueError):
                 return 0
 
+        # Handle dates robustly
+        raw_date = row_dict.get("transaction_date")
+        parsed_date = None
+        if pd.notna(raw_date) and str(raw_date).strip() not in ("", "nan", "None"):
+            dt = pd.to_datetime(raw_date, errors="coerce")
+            if pd.notna(dt):
+                parsed_date = dt.date()
+
         txn = Transaction(
             id=uuid_module.uuid4(),
             org_id=current_user.org_id,
             engagement_id=engagement_id,
-            transaction_date=pd.to_datetime(row_dict.get("transaction_date"), errors="coerce").date()
-            if row_dict.get("transaction_date") and str(row_dict.get("transaction_date")) != "nan"
-            else None,
-            document_number=str(row_dict.get("document_number", ""))[:100] if row_dict.get("document_number") else None,
-            account_code=str(row_dict.get("account_code", ""))[:50] if row_dict.get("account_code") else None,
-            account_name=str(row_dict.get("account_name", ""))[:255] if row_dict.get("account_name") else None,
+            transaction_date=parsed_date,
+            document_number=str(row_dict.get("document_number", ""))[:100] if pd.notna(row_dict.get("document_number")) else None,
+            account_code=str(row_dict.get("account_code", ""))[:50] if pd.notna(row_dict.get("account_code")) else None,
+            account_name=str(row_dict.get("account_name", ""))[:255] if pd.notna(row_dict.get("account_name")) else None,
             debit_amount=safe_decimal(row_dict.get("debit_amount")),
             credit_amount=safe_decimal(row_dict.get("credit_amount")),
-            currency=str(row_dict.get("currency", "USD"))[:3] if row_dict.get("currency") else "USD",
-            description=str(row_dict.get("description", "")) if row_dict.get("description") and str(row_dict.get("description")) != "nan" else None,
-            posted_by=str(row_dict.get("posted_by", "")) if row_dict.get("posted_by") and str(row_dict.get("posted_by")) != "nan" else None,
+            currency=str(row_dict.get("currency", "USD"))[:3] if pd.notna(row_dict.get("currency")) else "USD",
+            description=str(row_dict.get("description", "")) if pd.notna(row_dict.get("description")) else None,
+            posted_by=str(row_dict.get("posted_by", "")) if pd.notna(row_dict.get("posted_by")) else None,
             is_flagged=is_flagged,
             flag_reasons=flag_reasons,
             risk_score=risk_score,
