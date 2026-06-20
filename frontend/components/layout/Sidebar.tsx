@@ -15,6 +15,12 @@ import {
   ShieldCheck,
   Building,
   Receipt,
+  Briefcase,
+  Monitor,
+  Shield,
+  Leaf,
+  Settings2,
+  Truck,
   ChevronRight,
   Menu, 
   X,
@@ -39,6 +45,11 @@ const MODULE_ITEMS: NavItem[] = [
   { module: "financial_audit", href: "/financial", icon: ShieldCheck, label: "Financial Audit" },
   { module: "internal_audit", href: "/internal", icon: Building, label: "Internal Audit" },
   { module: "tax_audit", href: "/tax", icon: Receipt, label: "Tax Audit" },
+  { module: "it_audit", href: "/it", icon: Monitor, label: "IT Audit" },
+  { module: "cyber_audit", href: "/cyber", icon: Shield, label: "Cyber Audit" },
+  { module: "esg_audit", href: "/esg", icon: Leaf, label: "ESG Audit" },
+  { module: "operational_audit", href: "/operational", icon: Settings2, label: "Operational Audit" },
+  { module: "supply_chain_audit", href: "/supply-chain", icon: Truck, label: "Supply Chain Audit" },
 ];
 
 const ROLE_LABELS: Record<string, string> = {
@@ -138,6 +149,8 @@ export default function Sidebar({ isOpen, setIsOpen }: { isOpen?: boolean; setIs
 
         {/* Bottom items */}
         <div className="border-t border-slate-100 my-3 ml-2 mr-2" />
+        {renderItem({ href: "/marketplace", icon: Briefcase, label: "Audit Marketplace" })}
+        
         {user?.is_superadmin && (
           <Link
             href="/admin"

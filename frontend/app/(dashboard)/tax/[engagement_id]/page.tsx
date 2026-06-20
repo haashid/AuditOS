@@ -246,7 +246,7 @@ export default function TaxAuditPage() {
                         </div>
                       ) : (
                         <p className="text-sm text-slate-500 py-2">
-                          Download the JSON payload from the GSTN portal and upload it here.
+                          Download the <strong>Offline Utility JSON</strong> from the <a href="https://services.gst.gov.in/services/login" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">GSTN portal</a> and upload it here.
                         </p>
                       )}
                       

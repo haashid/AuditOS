@@ -29,6 +29,11 @@ TEMPLATES = {
     "generic": [
         "transaction_date", "document_number", "account_code", "account_name", 
         "debit_amount", "credit_amount", "currency", "description", "posted_by"
+    ],
+    "itsm_changes": [
+        "change_id", "change_type", "description", "requested_by", 
+        "approved_by", "implemented_by", "change_date", "environment", 
+        "has_rollback_plan", "was_tested"
     ]
 }
 
@@ -45,10 +50,17 @@ def download_template(erp_type: str):
     writer.writerow(TEMPLATES[erp_type])
     
     # Write one sample data row
-    writer.writerow([
-        "2024-01-15", "DOC-001", "1000", "Cash", 
-        "150.00", "0.00", "USD", "Sample Transaction", "system_user"
-    ] + [""] * (len(TEMPLATES[erp_type]) - 9))
+    if erp_type == "itsm_changes":
+        writer.writerow([
+            "CHG-1001", "normal", "Update DB schema", "dev.team", 
+            "cto@company.com", "db.admin", "2024-03-15", "production",
+            "true", "true"
+        ])
+    else:
+        writer.writerow([
+            "2024-01-15", "DOC-001", "1000", "Cash", 
+            "150.00", "0.00", "USD", "Sample Transaction", "system_user"
+        ] + [""] * (len(TEMPLATES[erp_type]) - 9))
 
     output.seek(0)
     

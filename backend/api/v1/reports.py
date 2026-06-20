@@ -17,6 +17,7 @@ from reportlab.lib.enums import TA_CENTER, TA_LEFT
 
 from core.database import get_db
 from core.security import get_current_user
+from core.permissions import require_role
 from core.config import settings
 from models.engagement import Engagement, Transaction
 from models.finding import Finding
@@ -31,7 +32,7 @@ router = APIRouter()
 @router.post("/engagements/{engagement_id}/reports/generate")
 def generate_audit_report(
     engagement_id: str,
-    current_user=Depends(get_current_user),
+    current_user=Depends(require_role("senior_auditor")),
     db: Session = Depends(get_db)
 ):
     engagement = db.query(Engagement).filter(

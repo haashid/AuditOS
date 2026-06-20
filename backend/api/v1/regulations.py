@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 from core.config import settings
 from core.database import get_db
 from core.security import get_current_user
+from core.permissions import require_role
 from models.regulation import Regulation, ComplianceGap
 from models.engagement import Engagement, Transaction
 
@@ -47,7 +48,7 @@ def list_regulations(db: Session = Depends(get_db), current_user=Depends(get_cur
 def run_gap_analysis(
     engagement_id: str,
     regulation_code: str,
-    current_user=Depends(get_current_user),
+    current_user=Depends(require_role("senior_auditor")),
     db: Session = Depends(get_db)
 ):
     """

@@ -23,6 +23,7 @@ class UserOut(BaseModel):
     role: str
     org_id: UUID
     is_active: bool
+    is_superadmin: bool = False
     onboarding_completed: bool
     created_at: datetime
 
@@ -32,3 +33,5 @@ class UserOut(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
+    role: Optional[str] = None
+    full_name: Optional[str] = None

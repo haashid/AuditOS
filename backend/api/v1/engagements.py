@@ -11,6 +11,7 @@ from core.database import get_db
 from core.security import get_current_user
 from core.permissions import require_role
 from models.user import User
+from models.portal_user import PortalUser
 from models.engagement import Engagement, Transaction
 from schemas.engagement import (
     EngagementCreate,
@@ -244,3 +245,48 @@ def list_transactions(
         page_size=page_size,
         data=transactions,
     )
+
+# ─── Portal Users ─────────────────────────────────────────────────────────────
+
+@router.get("/{engagement_id}/portal-users")
+def list_portal_users(
+    engagement_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    # Verify engagement belongs to this org
+    engagement = (
+        db.query(Engagement)
+        .filter(Engagement.id == engagement_id, Engagement.org_id == current_user.org_id)
+        .first()
+    )
+    if not engagement:
+        raise HTTPException(status_code=404, detail="Engagement not found")
+
+    users = db.query(PortalUser).filter(PortalUser.engagement_id == engagement_id).all()
+    return [{"id": str(u.id), "email": u.email, "full_name": u.full_name, "company_name": u.company_name} for u in users]
+
+
+@router.delete("/{engagement_id}/portal-users/{user_id}")
+def revoke_portal_user(
+    engagement_id: UUID,
+    user_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role("senior_auditor")),
+):
+    # Verify engagement belongs to this org
+    engagement = (
+        db.query(Engagement)
+        .filter(Engagement.id == engagement_id, Engagement.org_id == current_user.org_id)
+        .first()
+    )
+    if not engagement:
+        raise HTTPException(status_code=404, detail="Engagement not found")
+
+    user = db.query(PortalUser).filter(PortalUser.engagement_id == engagement_id, PortalUser.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Portal user not found")
+        
+    db.delete(user)
+    db.commit()
+    return {"message": "Portal access revoked"}

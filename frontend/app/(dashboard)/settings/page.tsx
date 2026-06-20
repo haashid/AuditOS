@@ -57,7 +57,7 @@ export default function SettingsPage() {
             <div className="flex flex-col">
               <InfoRow label="Full name" value={user?.full_name || "—"} />
               <InfoRow label="Email address" value={user?.email || "—"} />
-              <InfoRow label="Role" value={user?.role || "—"} />
+              <InfoRow label="Role" value={user?.role?.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase()) || "—"} />
               <InfoRow
                 label="Account created"
                 value={
@@ -71,6 +71,53 @@ export default function SettingsPage() {
                 }
               />
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Permissions card */}
+        <Card className="bg-white border-slate-200 shadow-sm">
+          <CardHeader className="pb-3 border-b border-slate-100">
+            <CardTitle className="text-base text-slate-900 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-blue-600" />
+              My Permissions
+            </CardTitle>
+            <CardDescription className="mt-1.5 text-sm text-slate-500">
+              Based on your role as <span className="font-semibold text-slate-700">{user?.role?.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase()) || "User"}</span>.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pt-4">
+            <ul className="space-y-3">
+              {user?.role === "partner" && (
+                <>
+                  <li className="flex gap-3 text-sm text-slate-600"><CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5"/> Manage entire organization settings and modules</li>
+                  <li className="flex gap-3 text-sm text-slate-600"><CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5"/> Invite and change roles for any team member</li>
+                  <li className="flex gap-3 text-sm text-slate-600"><CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5"/> Full access to all engagements, fraud analysis, and reports</li>
+                </>
+              )}
+              {user?.role === "senior_auditor" && (
+                <>
+                  <li className="flex gap-3 text-sm text-slate-600"><CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5"/> Create, edit, and manage assigned engagements</li>
+                  <li className="flex gap-3 text-sm text-slate-600"><CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5"/> Resolve high and critical severity findings</li>
+                  <li className="flex gap-3 text-sm text-slate-600"><CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5"/> Run AI fraud analysis and compliance checks</li>
+                  <li className="flex gap-3 text-sm text-slate-600"><CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5"/> Generate audit reports and manage client portal access</li>
+                </>
+              )}
+              {user?.role === "junior_auditor" && (
+                <>
+                  <li className="flex gap-3 text-sm text-slate-600"><CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5"/> View assigned engagements and transaction data</li>
+                  <li className="flex gap-3 text-sm text-slate-600"><CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5"/> Upload workpapers and draft new findings</li>
+                  <li className="flex gap-3 text-sm text-slate-600"><CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5"/> Resolve low/medium severity findings</li>
+                  <li className="flex gap-3 text-sm text-red-400"><CircleDashed className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5"/> Cannot run fraud analysis or finalize reports</li>
+                </>
+              )}
+              {user?.role === "reviewer" && (
+                <>
+                  <li className="flex gap-3 text-sm text-slate-600"><CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5"/> Read-only access to assigned engagements</li>
+                  <li className="flex gap-3 text-sm text-slate-600"><CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5"/> View findings, workpapers, and generated reports</li>
+                  <li className="flex gap-3 text-sm text-red-400"><CircleDashed className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5"/> Cannot modify findings, upload evidence, or run analysis</li>
+                </>
+              )}
+            </ul>
           </CardContent>
         </Card>
 

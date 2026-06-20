@@ -16,8 +16,8 @@ export default function OnboardingPage() {
 
   // Step 2 Form State
   const [engagementForm, setEngagementForm] = useState({
-    name: "Acme Corp Audit FY2024",
-    client_name: "Acme Corporation",
+    name: "",
+    client_name: "",
     audit_type: "financial",
     fiscal_year_start: "2024-01-01",
     fiscal_year_end: "2024-12-31",
@@ -125,7 +125,7 @@ export default function OnboardingPage() {
               </div>
 
               <div className="flex justify-end mt-8">
-                <Button onClick={handleNext} className="bg-blue-600 hover:bg-blue-600/90 text-slate-900">
+                <Button onClick={handleNext} className="bg-blue-600 hover:bg-blue-600/90 text-white">
                   Get Started <ChevronRight className="w-4 h-4 ml-2" />
                 </Button>
               </div>
@@ -165,7 +165,7 @@ export default function OnboardingPage() {
                 <Button
                   onClick={handleCreateEngagement}
                   disabled={loading}
-                  className="bg-blue-600 hover:bg-blue-600/90 text-slate-900"
+                  className="bg-blue-600 hover:bg-blue-600/90 text-white"
                 >
                   {loading ? "Creating..." : "Create Engagement"} <ChevronRight className="w-4 h-4 ml-2" />
                 </Button>
@@ -211,7 +211,7 @@ export default function OnboardingPage() {
                 <Button variant="ghost" onClick={handleNext} className="text-slate-500">
                   Skip for now
                 </Button>
-                <Button onClick={handleNext} className="bg-white/10 hover:bg-white/20 text-slate-900">
+                <Button onClick={handleNext} className="bg-blue-600 hover:bg-blue-600/90 text-white">
                   Next <ChevronRight className="w-4 h-4 ml-2" />
                 </Button>
               </div>
@@ -251,7 +251,7 @@ export default function OnboardingPage() {
                 <Button
                   onClick={handleComplete}
                   disabled={loading}
-                  className="bg-blue-600 hover:bg-blue-600/90 text-slate-900 px-8 py-6 text-lg rounded-xl shadow-lg shadow-blue-500/20"
+                  className="bg-blue-600 hover:bg-blue-600/90 text-white px-8 py-6 text-lg rounded-xl shadow-lg shadow-blue-500/20"
                 >
                   {loading ? "Completing..." : "Go to Dashboard"}
                 </Button>

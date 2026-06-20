@@ -64,6 +64,7 @@ import {
   Download,
 } from "lucide-react";
 import Link from "next/link";
+import { RoleGate } from "@/components/RoleGate";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const getToken = () =>
@@ -1120,20 +1121,40 @@ function FindingsTab({ engagementId }: { engagementId: string }) {
                   <div>
                     <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-1">Update Status</p>
                     <div className="flex flex-wrap gap-2">
-                      {["open", "in_progress", "resolved", "risk_accepted"].map((s) => (
-                        <button
-                          key={s}
-                          id={`finding-status-${f.id}-${s}`}
-                          onClick={() => handleStatusChange(f.id, s)}
-                          className={`px-3 py-1 rounded-lg text-xs border transition-all ${
-                            f.status === s
-                              ? STATUS_COLORS[s]
-                              : "bg-white text-slate-500 border-slate-200 hover:border-slate-500"
-                          }`}
-                        >
-                          {s.replace("_", " ")}
-                        </button>
-                      ))}
+                      {["open", "in_progress", "resolved", "risk_accepted"].map((s) => {
+                        const isProtected = s === "resolved" && (f.severity === "high" || f.severity === "critical");
+                        const btn = (
+                          <button
+                            key={s}
+                            id={`finding-status-${f.id}-${s}`}
+                            onClick={() => handleStatusChange(f.id, s)}
+                            className={`px-3 py-1 rounded-lg text-xs border transition-all ${
+                              f.status === s
+                                ? STATUS_COLORS[s]
+                                : "bg-white text-slate-500 border-slate-200 hover:border-slate-500"
+                            }`}
+                          >
+                            {s.replace("_", " ")}
+                          </button>
+                        );
+
+                        if (isProtected) {
+                          return (
+                            <RoleGate 
+                              key={s} 
+                              minimumRole="senior_auditor" 
+                              fallback={
+                                <button disabled className="px-3 py-1 rounded-lg text-xs border bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed">
+                                  resolved (Senior+)
+                                </button>
+                              }
+                            >
+                              {btn}
+                            </RoleGate>
+                          );
+                        }
+                        return btn;
+                      })}
                     </div>
                   </div>
                 </div>
@@ -1508,29 +1529,31 @@ export default function EngagementDetailPage() {
               </Badge>
             )}
           </div>
-          <Button
-            variant="outline"
-            className="border-blue-600/30 text-blue-600 hover:bg-blue-50 hover:text-blue-600"
-            onClick={async () => {
-              try {
-                const blob = await apiGenerateReport(engagementId);
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = `AuditReport_${engagement?.name?.replace(/ /g, "_") || "Engagement"}.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                window.URL.revokeObjectURL(url);
-                toast.success("Audit Report generated and downloaded");
-              } catch (err: any) {
-                toast.error(err.message || "Failed to generate report");
-              }
-            }}
-          >
-            <FileText className="w-4 h-4 mr-2" />
-            Generate Audit Report
-          </Button>
+          <RoleGate minimumRole="senior_auditor">
+            <Button
+              variant="outline"
+              className="border-blue-600/30 text-blue-600 hover:bg-blue-50 hover:text-blue-600"
+              onClick={async () => {
+                try {
+                  const blob = await apiGenerateReport(engagementId);
+                  const url = window.URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `AuditReport_${engagement?.name?.replace(/ /g, "_") || "Engagement"}.pdf`;
+                  document.body.appendChild(a);
+                  a.click();
+                  a.remove();
+                  window.URL.revokeObjectURL(url);
+                  toast.success("Audit Report generated and downloaded");
+                } catch (err: any) {
+                  toast.error(err.message || "Failed to generate report");
+                }
+              }}
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              Generate Audit Report
+            </Button>
+          </RoleGate>
         </div>
       </div>
 
@@ -1548,6 +1571,12 @@ export default function EngagementDetailPage() {
           </TabsTrigger>
           <TabsTrigger id="tab-regulations" value="regulations" className="data-[state=active]:bg-blue-50 data-[state=active]:text-slate-900 text-slate-500 text-sm px-4 py-2.5 w-full justify-start rounded-lg transition-colors mt-1 outline-none focus-visible:ring-0">
             <ScrollText className="w-4 h-4 mr-2" />Regulations
+          </TabsTrigger>
+          <TabsTrigger id="tab-workpapers" value="workpapers" className="data-[state=active]:bg-blue-50 data-[state=active]:text-slate-900 text-slate-500 text-sm px-4 py-2.5 w-full justify-start rounded-lg transition-colors mt-1 outline-none focus-visible:ring-0">
+            <ClipboardList className="w-4 h-4 mr-2" />Workpapers
+          </TabsTrigger>
+          <TabsTrigger id="tab-client" value="client" className="data-[state=active]:bg-blue-50 data-[state=active]:text-slate-900 text-slate-500 text-sm px-4 py-2.5 w-full justify-start rounded-lg transition-colors mt-1 outline-none focus-visible:ring-0">
+            <Users className="w-4 h-4 mr-2" />Client Access
           </TabsTrigger>
           <TabsTrigger id="tab-documents" value="documents" className="data-[state=active]:bg-blue-50 data-[state=active]:text-slate-900 text-slate-500 text-sm px-4 py-2.5 w-full justify-start rounded-lg transition-colors mt-1 outline-none focus-visible:ring-0">
             <FileSearch className="w-4 h-4 mr-2" />Documents
@@ -1581,6 +1610,24 @@ export default function EngagementDetailPage() {
           </TabsContent>
           <TabsContent value="workpapers" className="mt-0">
             <WorkpapersTab engagementId={engagementId} />
+          </TabsContent>
+          <TabsContent value="client" className="mt-0 outline-none">
+            <RoleGate minimumRole="senior_auditor" fallback={<p className="text-slate-500 p-6">Client access management requires Senior Auditor.</p>}>
+              <div className="p-6 bg-white rounded-xl border border-slate-200">
+                <h3 className="font-semibold text-slate-900 mb-2">Client Portal Invite</h3>
+                <p className="text-sm text-slate-500 mb-4">Share this link with your client so they can access the portal and respond to open findings.</p>
+                <div className="flex items-center gap-2">
+                   <Input value={`${window.location.origin}/portal/register?engagement=${engagementId}`} readOnly className="bg-slate-50 text-slate-600 font-mono text-sm" />
+                   <Button onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.origin}/portal/register?engagement=${engagementId}`);
+                      toast.success("Portal link copied to clipboard");
+                   }} className="bg-blue-600 hover:bg-blue-700 text-white">
+                      <Copy className="w-4 h-4 mr-2" />
+                      Copy Link
+                   </Button>
+                </div>
+              </div>
+            </RoleGate>
           </TabsContent>
         </div>
       </Tabs>
@@ -1664,14 +1711,23 @@ function FraudTab({ engagementId }: { engagementId: string }) {
           <h2 className="text-lg font-semibold text-slate-900">Fraud Intelligence</h2>
           <p className="text-sm text-slate-500">AI-powered detection of complex fraud patterns.</p>
         </div>
-        <Button
-          onClick={handleRunAnalysis}
-          disabled={analyzing}
-          className="bg-blue-600 hover:bg-blue-700 text-slate-900"
-        >
-          {analyzing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <ShieldAlert className="w-4 h-4 mr-2" />}
-          {analyzing ? "Analyzing..." : "Run Analysis"}
-        </Button>
+        <div>
+          <RoleGate minimumRole="senior_auditor">
+            <Button
+              onClick={handleRunAnalysis}
+              disabled={analyzing}
+              className="bg-blue-600 hover:bg-blue-700 text-slate-900"
+            >
+              {analyzing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <ShieldAlert className="w-4 h-4 mr-2" />}
+              {analyzing ? "Analyzing..." : "Run Analysis"}
+            </Button>
+          </RoleGate>
+          <RoleGate exactRoles={["junior_auditor", "reviewer"]}>
+            <p className="text-slate-400 text-sm">
+              Fraud analysis requires Senior Auditor access.
+            </p>
+          </RoleGate>
+        </div>
       </div>
 
       {alerts.length === 0 && !analyzing && (

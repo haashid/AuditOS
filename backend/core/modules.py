@@ -35,8 +35,7 @@ AVAILABLE_MODULES = {
         "icon": "monitor",
         "color": "#06b6d4",
         "is_core": False,
-        "phase_available": 4,
-        "coming_soon": True
+        "phase_available": 4
     },
     "cyber_audit": {
         "name": "Cybersecurity Audit",
@@ -44,8 +43,7 @@ AVAILABLE_MODULES = {
         "icon": "shield",
         "color": "#ef4444",
         "is_core": False,
-        "phase_available": 4,
-        "coming_soon": True
+        "phase_available": 4
     },
     "esg_audit": {
         "name": "ESG Audit",
@@ -53,8 +51,7 @@ AVAILABLE_MODULES = {
         "icon": "leaf",
         "color": "#10b981",
         "is_core": False,
-        "phase_available": 4,
-        "coming_soon": True
+        "phase_available": 4
     },
     "operational_audit": {
         "name": "Operational Audit",
@@ -62,8 +59,7 @@ AVAILABLE_MODULES = {
         "icon": "settings",
         "color": "#f97316",
         "is_core": False,
-        "phase_available": 4,
-        "coming_soon": True
+        "phase_available": 4
     },
     "supply_chain_audit": {
         "name": "Supply Chain Audit",
@@ -71,8 +67,7 @@ AVAILABLE_MODULES = {
         "icon": "truck",
         "color": "#6366f1",
         "is_core": False,
-        "phase_available": 5,
-        "coming_soon": True
+        "phase_available": 5
     }
 }
 

@@ -61,6 +61,9 @@ async def upload_document(
 
     # Save to disk
     save_dir = os.path.join(settings.UPLOAD_DIR, engagement_id, "documents")
+    # WARNING: Railway uses an ephemeral file system by default. 
+    # Unless a volume is attached, these files will be lost on the next deploy.
+    logger.warning("Saving to local UPLOAD_DIR. Ensure persistent storage is configured for production on Railway.")
     os.makedirs(save_dir, exist_ok=True)
     file_id = str(uuid.uuid4())
     save_path = os.path.join(save_dir, f"{file_id}.{file_ext}")

@@ -57,6 +57,14 @@ def create_finding(
     if not engagement:
         raise HTTPException(status_code=404, detail="Engagement not found")
 
+    from core.permissions import ROLE_HIERARCHY
+    if body.severity in ["high", "critical"]:
+        if ROLE_HIERARCHY.get(current_user.role, 0) < ROLE_HIERARCHY.get("senior_auditor", 0):
+            raise HTTPException(
+                status_code=403,
+                detail="Creating high or critical findings requires Senior Auditor role or above"
+            )
+
     finding = Finding(
         org_id=current_user.org_id,
         engagement_id=engagement_id,
@@ -130,6 +138,14 @@ def update_finding(
     )
     if not finding:
         raise HTTPException(status_code=404, detail="Finding not found")
+
+    from core.permissions import ROLE_HIERARCHY
+    if body.status == "resolved":
+        if ROLE_HIERARCHY.get(current_user.role, 0) < ROLE_HIERARCHY.get("senior_auditor", 0):
+            raise HTTPException(
+                status_code=403,
+                detail="Resolving findings requires Senior Auditor role or above"
+            )
 
     update_data = body.dict(exclude_none=True)
     for field, value in update_data.items():

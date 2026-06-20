@@ -3,6 +3,8 @@ from functools import lru_cache
 
 
 class Settings(BaseSettings):
+    ENVIRONMENT: str = "production"
+    
     # Database
     DATABASE_URL: str = "postgresql://auditos:auditos123@localhost:5432/auditos"
 

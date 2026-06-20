@@ -26,3 +26,4 @@ APScheduler==3.10.4
 numpy==1.26.4
 lxml==5.2.2
 rapidfuzz==3.9.0
+slowapi==0.1.9

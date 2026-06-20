@@ -2,6 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import timedelta
 import re
+from fastapi import Request
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)
 
 from core.database import get_db
 from core.security import hash_password, verify_password, create_access_token, get_current_user
@@ -53,23 +58,24 @@ def register(payload: UserCreate, db: Session = Depends(get_db)):
 
     # Issue JWT
     token = create_access_token(
-        data={"sub": str(user.id), "org_id": str(org.id)},
+        data={"sub": str(user.id), "org_id": str(org.id), "role": user.role},
         expires_delta=timedelta(minutes=60),
     )
-    return TokenResponse(access_token=token)
+    return TokenResponse(access_token=token, role=user.role, full_name=user.full_name)
 
 
 @router.post("/login", response_model=TokenResponse)
-def login(payload: UserLogin, db: Session = Depends(get_db)):
+@limiter.limit("10/minute")
+def login(request: Request, payload: UserLogin, db: Session = Depends(get_db)):
     """Authenticate and return a JWT."""
     user = db.query(User).filter(User.email == payload.email, User.is_active == True).first()
     if not user or not verify_password(payload.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     token = create_access_token(
-        data={"sub": str(user.id), "org_id": str(user.org_id)},
+        data={"sub": str(user.id), "org_id": str(user.org_id), "role": user.role},
     )
-    return TokenResponse(access_token=token)
+    return TokenResponse(access_token=token, role=user.role, full_name=user.full_name)
 
 
 @router.get("/me", response_model=UserOut)

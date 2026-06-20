@@ -6,6 +6,7 @@ import {
   Users, UserPlus, Copy, Check, Shield, Star, Eye, Briefcase,
   Mail, Calendar, Crown, ChevronDown,
 } from "lucide-react";
+import { RoleGate } from "@/components/RoleGate";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -125,7 +126,7 @@ export default function TeamPage() {
             </h1>
             <p className="text-slate-500 text-sm mt-1">Manage your firm&apos;s members and permissions</p>
           </div>
-          {isPartner && (
+          <RoleGate minimumRole="partner">
             <button
               id="invite-member-btn"
               onClick={() => { setShowInviteModal(true); setInviteLink(""); setError(""); setInviteEmail(""); }}
@@ -134,7 +135,7 @@ export default function TeamPage() {
               <UserPlus className="w-4 h-4" />
               Invite Member
             </button>
-          )}
+          </RoleGate>
         </div>
 
         {/* Stats row */}
@@ -169,7 +170,9 @@ export default function TeamPage() {
                   <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Member</th>
                   <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Role</th>
                   <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Joined</th>
-                  {isPartner && <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Actions</th>}
+                  <RoleGate minimumRole="partner">
+                    <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Actions</th>
+                  </RoleGate>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
@@ -193,7 +196,7 @@ export default function TeamPage() {
                         {m.created_at ? new Date(m.created_at).toLocaleDateString() : "—"}
                       </span>
                     </td>
-                    {isPartner && (
+                    <RoleGate minimumRole="partner">
                       <td className="px-6 py-4">
                         {m.id !== user?.id ? (
                           <div className="relative group inline-block">
@@ -212,7 +215,7 @@ export default function TeamPage() {
                           <span className="text-xs text-slate-400 italic">You</span>
                         )}
                       </td>
-                    )}
+                    </RoleGate>
                   </tr>
                 ))}
               </tbody>

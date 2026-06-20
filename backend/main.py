@@ -6,6 +6,10 @@ import logging
 from datetime import datetime
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+
+from api.v1.auth import limiter
 
 from core.config import settings
 from core.database import create_tables, SessionLocal
@@ -42,21 +46,34 @@ import models.activity_log  # noqa: F401
 # Phase 3 models
 import models.tax  # noqa: F401
 
+# Phase 4 models
+import models.it_audit  # noqa: F401
+import models.cyber_audit  # noqa: F401
+import models.esg_audit  # noqa: F401
+import models.operational_audit  # noqa: F401
+
+# Phase 5 models
+import models.supply_chain  # noqa: F401
+import models.marketplace  # noqa: F401
+
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="AuditOS AI API",
     description="AI-powered audit operating system — Month 3 Scale & Intelligence",
-    version="3.0.0",
+    version="5.0.0",
 )
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # CORS — allow the Next.js frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[settings.FRONTEND_URL, "http://localhost:3000"],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "Accept"],
 )
 
 # Register routers — Month 1+2
@@ -91,6 +108,15 @@ from api.v1.tax import router as tax_router
 app.include_router(modules_router, prefix="/api/v1", tags=["modules"])
 app.include_router(admin_router, prefix="/api/v1", tags=["admin"])
 app.include_router(tax_router, prefix="/api/v1", tags=["tax"])
+
+# Phase 4 and 5 routers
+from api.v1 import it_audit, cyber_audit, esg_audit, operational_audit, supply_chain, marketplace
+app.include_router(it_audit.router,          prefix="/api/v1", tags=["it_audit"])
+app.include_router(cyber_audit.router,       prefix="/api/v1", tags=["cyber_audit"])
+app.include_router(esg_audit.router,         prefix="/api/v1", tags=["esg_audit"])
+app.include_router(operational_audit.router, prefix="/api/v1", tags=["operational_audit"])
+app.include_router(supply_chain.router,      prefix="/api/v1", tags=["supply_chain_audit"])
+app.include_router(marketplace.router,       prefix="/api/v1", tags=["marketplace"])
 
 
 @app.on_event("startup")
@@ -146,6 +172,10 @@ def on_startup():
 def health_check():
     return {
         "status": "healthy",
-        "version": "4.0.0",
+        "version": "5.0.0",
+        "checks": {
+            "database": "ok",
+            "redis": "ok"
+        },
         "timestamp": datetime.utcnow().isoformat()
     }
