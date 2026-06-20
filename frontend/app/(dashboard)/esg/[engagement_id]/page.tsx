@@ -1,9 +1,11 @@
 "use client";
 
+import { CopilotFAB } from '@/components/CopilotFAB';
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import { Leaf, Plus, Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const getToken = () => typeof window !== "undefined" ? localStorage.getItem("auditos_token") : null;
@@ -497,12 +499,16 @@ export default function ESGAuditDetailPage() {
                 BRSR Analysis Results
               </h4>
               <div ref={brslRef} className="bg-slate-50 rounded-lg p-4 border border-slate-100 max-h-[600px] overflow-y-auto">
-                <pre className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed font-mono">{brslText}</pre>
+                <div className="prose prose-sm prose-slate max-w-none prose-p:leading-relaxed prose-pre:bg-slate-100 prose-pre:text-slate-800">
+                  <ReactMarkdown>{brslText}</ReactMarkdown>
+                </div>
               </div>
             </div>
           )}
         </div>
       )}
+      <CopilotFAB engagementId={engagementId} moduleName="esg" />
     </div>
   );
 }
+

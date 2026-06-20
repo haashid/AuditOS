@@ -1,9 +1,11 @@
 "use client";
 
+import { CopilotFAB } from '@/components/CopilotFAB';
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import { Shield, Upload, AlertTriangle, Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const getToken = () => typeof window !== "undefined" ? localStorage.getItem("auditos_token") : null;
@@ -334,12 +336,16 @@ export default function CyberAuditDetailPage() {
             </button>
             {nistText && (
               <div className="mt-4 bg-white border border-slate-200 rounded-xl p-4 max-h-[400px] overflow-y-auto">
-                <pre className="text-sm text-slate-700 whitespace-pre-wrap font-mono leading-relaxed">{nistText}</pre>
+                <div className="prose prose-sm prose-slate max-w-none prose-p:leading-relaxed prose-pre:bg-slate-100 prose-pre:text-slate-800">
+                  <ReactMarkdown>{nistText}</ReactMarkdown>
+                </div>
               </div>
             )}
           </div>
         </div>
       )}
+      <CopilotFAB engagementId={engagementId} moduleName="cyber" />
     </div>
   );
 }
+

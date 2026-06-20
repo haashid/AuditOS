@@ -125,6 +125,12 @@ export async function apiGetEngagement(id: string): Promise<Engagement> {
   return request<Engagement>(`/api/v1/engagements/${id}`);
 }
 
+export async function apiDeleteEngagement(id: string): Promise<void> {
+  return request<void>(`/api/v1/engagements/${id}`, {
+    method: "DELETE",
+  });
+}
+
 // ─── Transactions ─────────────────────────────────────────────────────────────
 
 export interface Transaction {

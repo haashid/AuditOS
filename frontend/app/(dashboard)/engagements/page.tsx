@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/useToast";
-import { apiListEngagements, apiCreateEngagement, Engagement } from "@/lib/api";
+import { apiListEngagements, apiCreateEngagement, apiDeleteEngagement, Engagement } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Plus, ClipboardList, ChevronRight, Calendar } from "lucide-react";
+import { Plus, ClipboardList, ChevronRight, Calendar, Trash2 } from "lucide-react";
 
 const STATUS_COLORS: Record<string, string> = {
   planning: "bg-amber-100 text-amber-800 border-amber-200",
@@ -33,9 +33,11 @@ const STATUS_COLORS: Record<string, string> = {
 function EngagementRow({
   engagement,
   onClick,
+  onDelete,
 }: {
   engagement: Engagement;
   onClick: () => void;
+  onDelete: (e: React.MouseEvent) => void;
 }) {
   return (
     <div
@@ -70,6 +72,14 @@ function EngagementRow({
       </div>
 
       <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-blue-500 transition-colors flex-shrink-0" />
+      
+      <button 
+        onClick={onDelete}
+        className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors ml-2 flex-shrink-0"
+        title="Delete Engagement"
+      >
+        <Trash2 className="w-4 h-4" />
+      </button>
     </div>
   );
 }
@@ -99,6 +109,18 @@ export default function EngagementsPage() {
 
   const update = (key: string, val: string) =>
     setForm((prev) => ({ ...prev, [key]: val }));
+
+  const handleDelete = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    if (!window.confirm("Are you sure you want to delete this engagement? This action cannot be undone.")) return;
+    try {
+      await apiDeleteEngagement(id);
+      toast.success("Engagement deleted successfully");
+      load();
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to delete engagement");
+    }
+  };
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -184,6 +206,7 @@ export default function EngagementsPage() {
                 key={eng.id}
                 engagement={eng}
                 onClick={() => router.push(`/engagements/${eng.id}`)}
+                onDelete={(e) => handleDelete(e, eng.id)}
               />
             ))}
           </div>

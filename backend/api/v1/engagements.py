@@ -80,6 +80,50 @@ def get_engagement(
     return engagement
 
 
+@router.delete("/{engagement_id}", status_code=204)
+def delete_engagement(
+    engagement_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role("senior_auditor")),
+):
+    engagement = (
+        db.query(Engagement)
+        .filter(Engagement.id == engagement_id, Engagement.org_id == current_user.org_id)
+        .first()
+    )
+    if not engagement:
+        raise HTTPException(status_code=404, detail="Engagement not found")
+        
+    from sqlalchemy import text
+    
+    # Dynamically find all child tables referencing engagements to manually cascade delete
+    # (Since PostgreSQL constraints were not created with ON DELETE CASCADE)
+    res = db.execute(text('''
+        SELECT tc.table_name, kcu.column_name 
+        FROM information_schema.table_constraints AS tc 
+        JOIN information_schema.key_column_usage AS kcu 
+          ON tc.constraint_name = kcu.constraint_name 
+        JOIN information_schema.constraint_column_usage AS ccu 
+          ON ccu.constraint_name = tc.constraint_name 
+        WHERE tc.constraint_type = 'FOREIGN KEY' AND ccu.table_name='engagements';
+    '''))
+    
+    for row in res:
+        tbl, col = row[0], row[1]
+        db.execute(text(f"DELETE FROM {tbl} WHERE {col} = :eid"), {"eid": engagement_id})
+
+    db.delete(engagement)
+    db.commit()
+
+    from core.activity_logger import log_activity
+    log_activity(db, current_user, "engagement_deleted",
+                  f"Deleted engagement '{engagement.name}'",
+                  engagement_id=None,  # engagement is gone!
+                  resource_type="engagement", resource_id=str(engagement_id))
+
+    return None
+
+
 # ─── File Upload ──────────────────────────────────────────────────────────────
 
 @router.post("/{engagement_id}/upload", response_model=UploadResponse)

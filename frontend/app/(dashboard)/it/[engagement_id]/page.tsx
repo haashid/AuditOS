@@ -1,5 +1,6 @@
 "use client";
 
+import { CopilotFAB } from '@/components/CopilotFAB';
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import { toast } from "@/hooks/useToast";
@@ -644,6 +645,8 @@ export default function ITAuditDetailPage() {
           )}
         </div>
       )}
+      <CopilotFAB engagementId={engagementId} moduleName="it" />
     </div>
   );
 }
+

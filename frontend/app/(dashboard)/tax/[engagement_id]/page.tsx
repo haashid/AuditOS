@@ -1,5 +1,6 @@
 "use client";
 
+import { CopilotFAB } from '@/components/CopilotFAB';
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
@@ -549,6 +550,8 @@ export default function TaxAuditPage() {
         )}
 
       </div>
+      <CopilotFAB engagementId={engagementId} moduleName="tax" />
     </div>
   );
 }
+

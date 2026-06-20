@@ -1,9 +1,11 @@
 "use client";
 
+import { CopilotFAB } from '@/components/CopilotFAB';
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, BrainCircuit, Activity, Shield, Leaf, FileText } from "lucide-react";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const getToken = () => typeof window !== "undefined" ? localStorage.getItem("auditos_token") : null;
@@ -164,22 +166,28 @@ export default function VendorDetailPage() {
                 </div>
                 
                 <h4 className="font-semibold text-slate-900 mb-2">Overall Summary</h4>
-                <p className="text-sm text-slate-700 mb-4 bg-indigo-50/50 p-3 rounded-lg border border-indigo-100 leading-relaxed">
-                  {a.ai_overall_summary}
-                </p>
+                <div className="text-sm text-slate-700 mb-4 bg-indigo-50/50 p-3 rounded-lg border border-indigo-100 leading-relaxed prose prose-sm prose-slate max-w-none prose-p:leading-relaxed">
+                  <ReactMarkdown>{a.ai_overall_summary}</ReactMarkdown>
+                </div>
 
                 <div className="space-y-3">
                   <div>
                     <h5 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Financial Risk</h5>
-                    <p className="text-sm text-slate-600 leading-relaxed">{a.ai_financial_risk_explanation}</p>
+                    <div className="text-sm text-slate-600 leading-relaxed prose prose-sm prose-slate max-w-none prose-p:leading-relaxed">
+                      <ReactMarkdown>{a.ai_financial_risk_explanation}</ReactMarkdown>
+                    </div>
                   </div>
                   <div>
                     <h5 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Cyber Risk</h5>
-                    <p className="text-sm text-slate-600 leading-relaxed">{a.ai_cyber_risk_explanation}</p>
+                    <div className="text-sm text-slate-600 leading-relaxed prose prose-sm prose-slate max-w-none prose-p:leading-relaxed">
+                      <ReactMarkdown>{a.ai_cyber_risk_explanation}</ReactMarkdown>
+                    </div>
                   </div>
                   <div>
                     <h5 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">ESG Risk</h5>
-                    <p className="text-sm text-slate-600 leading-relaxed">{a.ai_esg_risk_explanation}</p>
+                    <div className="text-sm text-slate-600 leading-relaxed prose prose-sm prose-slate max-w-none prose-p:leading-relaxed">
+                      <ReactMarkdown>{a.ai_esg_risk_explanation}</ReactMarkdown>
+                    </div>
                   </div>
                 </div>
 
@@ -188,7 +196,9 @@ export default function VendorDetailPage() {
                     <h5 className="text-xs font-bold text-slate-800 uppercase tracking-wide mb-2 flex items-center gap-1.5">
                       <Shield className="w-3.5 h-3.5 text-indigo-500" /> Recommended Actions
                     </h5>
-                    <p className="text-sm text-slate-600 leading-relaxed">{a.ai_recommended_actions}</p>
+                    <div className="text-sm text-slate-600 leading-relaxed prose prose-sm prose-slate max-w-none prose-p:leading-relaxed">
+                      <ReactMarkdown>{a.ai_recommended_actions}</ReactMarkdown>
+                    </div>
                   </div>
                 )}
               </div>
@@ -202,6 +212,8 @@ export default function VendorDetailPage() {
           )}
         </div>
       </div>
+      <CopilotFAB engagementId={vendorId} moduleName="supply-chain" />
     </div>
   );
 }
+

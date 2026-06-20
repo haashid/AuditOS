@@ -178,6 +178,7 @@ def health_check():
     return {
         "status": "healthy",
         "version": "5.0.0",
+        "environment": settings.ENVIRONMENT,
         "checks": {
             "database": "ok",
             "redis": "ok"

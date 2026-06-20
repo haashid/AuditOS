@@ -8,6 +8,7 @@ import { apiFetch } from "@/lib/api";
 import { DashboardTab } from "@/components/internal-audit/DashboardTab";
 import { ControlMatrixTable } from "@/components/internal-audit/ControlMatrixTable";
 import { toast } from "@/hooks/useToast";
+import { CopilotFAB } from '@/components/CopilotFAB';
 
 export default function InternalAuditPage() {
   const [controls, setControls] = useState<any[]>([]);
@@ -110,3 +111,5 @@ export default function InternalAuditPage() {
     </div>
   );
 }
+
+
