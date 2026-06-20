@@ -1,0 +1,6 @@
+department,kpi_name,kpi_category,unit,actual_value,target_value,prior_period_value,period
+Sales,Revenue,Financial,USD,1050000,1000000,950000,Q1 2024
+Operations,Downtime,Process,Hours,45,20,30,Q1 2024
+HR,Turnover Rate,People,Percentage,12.5,10.0,11.0,Q1 2024
+IT,Helpdesk Resolution,Service,Hours,4.5,2.0,3.0,Q1 2024
+Manufacturing,Defect Rate,Quality,Percentage,2.1,1.5,1.8,Q1 2024

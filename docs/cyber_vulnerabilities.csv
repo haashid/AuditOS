@@ -1,0 +1,5 @@
+Plugin ID,CVE,CVSS,Risk,Host,Port,Name,Description,Solution
+1001,CVE-2021-44228,10.0,Critical,192.168.1.10,8080,Log4Shell,Log4j vulnerability,Upgrade Log4j
+1002,CVE-2023-12345,7.5,High,192.168.1.15,443,OpenSSL Bug,Buffer overflow,Apply patch
+1003,CVE-2022-98765,5.0,Medium,10.0.0.5,22,SSH Weak Ciphers,Weak encryption,Disable weak ciphers
+1004,None,0.0,Info,10.0.0.6,80,HTTP Trace Enabled,Trace method is enabled,Disable Trace method

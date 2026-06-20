@@ -36,6 +36,9 @@ async function request<T>(
   return res.json();
 }
 
+// Export the generic fetch wrapper for direct use
+export const apiFetch = request;
+
 // ─── Auth ────────────────────────────────────────────────────────────────────
 
 export interface TokenResponse {

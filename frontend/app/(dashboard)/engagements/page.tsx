@@ -233,10 +233,14 @@ export default function EngagementsPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-white border-slate-200 text-slate-900">
-                  <SelectItem value="financial">Financial</SelectItem>
-                  <SelectItem value="internal">Internal</SelectItem>
-                  <SelectItem value="tax">Tax</SelectItem>
-                  <SelectItem value="operational">Operational</SelectItem>
+                  <SelectItem value="financial">Financial Audit</SelectItem>
+                  <SelectItem value="internal">Internal Audit</SelectItem>
+                  <SelectItem value="tax">Tax Audit</SelectItem>
+                  <SelectItem value="it">IT Audit</SelectItem>
+                  <SelectItem value="cyber">Cybersecurity Audit</SelectItem>
+                  <SelectItem value="esg">ESG Audit</SelectItem>
+                  <SelectItem value="operational">Operational Audit</SelectItem>
+                  <SelectItem value="supply_chain">Supply Chain Audit</SelectItem>
                 </SelectContent>
               </Select>
             </div>

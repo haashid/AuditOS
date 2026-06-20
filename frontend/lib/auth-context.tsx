@@ -25,6 +25,7 @@ interface AuthContextType {
 }
 
 const ROLE_HIERARCHY: Record<string, number> = {
+  admin: 5,
   partner: 4,
   senior_auditor: 3,
   junior_auditor: 2,

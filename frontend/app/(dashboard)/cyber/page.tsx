@@ -15,6 +15,7 @@ export default function CyberAuditPage() {
         hoverBg: "hover:border-red-200",
         icon: <Shield className="w-6 h-6 text-red-100" />,
         basePath: "/cyber",
+        auditType: "cyber",
       }}
     />
   );

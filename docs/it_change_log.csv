@@ -1,0 +1,5 @@
+change_id,change_type,description,requested_by,approved_by,implemented_by,change_date,environment,has_rollback_plan,was_tested
+CHG001,Normal,Update database schema,jdoe,asmith,rroe,2024-03-01,Production,True,True
+CHG002,Emergency,Fix critical security bug,jdoe,asmith,rroe,2024-03-05,Production,False,False
+CHG003,Normal,Deploy new feature X,tclark,asmith,jdoe,2024-03-10,Staging,True,True
+CHG004,Standard,Monthly OS patching,rroe,asmith,rroe,2024-03-15,Production,True,True

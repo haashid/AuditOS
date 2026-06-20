@@ -15,6 +15,7 @@ export default function ESGAuditPage() {
         hoverBg: "hover:border-emerald-200",
         icon: <Leaf className="w-6 h-6 text-emerald-100" />,
         basePath: "/esg",
+        auditType: "esg",
       }}
     />
   );

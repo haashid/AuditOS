@@ -1,0 +1,97 @@
+{
+  "data": {
+    "gstin": "29ABCDE1234F1Z5",
+    "rtnprd": "032024",
+    "gendt": "14-04-2024",
+    "docdata": {
+      "b2b": [
+        {
+          "ctin": "27XYZAB5678C1D2",
+          "trdnm": "XYZ Traders Pvt Ltd",
+          "doc": [
+            {
+              "docnum": "SUP-INV-101",
+              "docdt": "02-03-2024",
+              "doctyp": "INV",
+              "itms": [
+                {
+                  "num": 1,
+                  "rt": 18,
+                  "txval": 400000.00,
+                  "igst": 72000.00,
+                  "cgst": 0.00,
+                  "sgst": 0.00,
+                  "cess": 0.00,
+                  "elgsts": "Eligible"
+                }
+              ]
+            },
+            {
+              "docnum": "SUP-INV-102",
+              "docdt": "12-03-2024",
+              "doctyp": "INV",
+              "itms": [
+                {
+                  "num": 1,
+                  "rt": 18,
+                  "txval": 100000.00,
+                  "igst": 0.00,
+                  "cgst": 9000.00,
+                  "sgst": 9000.00,
+                  "cess": 0.00,
+                  "elgsts": "Eligible"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ctin": "33PQRST9012G1H3",
+          "trdnm": "PQR Supplies Ltd",
+          "doc": [
+            {
+              "docnum": "SUP-INV-201",
+              "docdt": "16-03-2024",
+              "doctyp": "INV",
+              "itms": [
+                {
+                  "num": 1,
+                  "rt": 18,
+                  "txval": 200000.00,
+                  "igst": 0.00,
+                  "cgst": 7000.00,
+                  "sgst": 7000.00,
+                  "cess": 0.00,
+                  "elgsts": "Eligible"
+                }
+              ]
+            },
+            {
+              "docnum": "SUP-INV-202",
+              "docdt": "22-03-2024",
+              "doctyp": "INV",
+              "itms": [
+                {
+                  "num": 1,
+                  "rt": 12,
+                  "txval": 50000.00,
+                  "igst": 6000.00,
+                  "cgst": 0.00,
+                  "sgst": 0.00,
+                  "cess": 0.00,
+                  "elgsts": "Ineligible"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "itcsum": {
+      "igst": 72000.00,
+      "cgst": 16000.00,
+      "sgst": 16000.00,
+      "cess": 0.00
+    }
+  }
+}

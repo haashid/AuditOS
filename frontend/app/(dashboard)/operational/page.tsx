@@ -15,6 +15,7 @@ export default function OperationalAuditPage() {
         hoverBg: "hover:border-orange-200",
         icon: <Settings2 className="w-6 h-6 text-orange-100" />,
         basePath: "/operational",
+        auditType: "operational",
       }}
     />
   );

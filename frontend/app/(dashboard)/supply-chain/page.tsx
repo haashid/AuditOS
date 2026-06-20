@@ -23,9 +23,10 @@ export default function SupplyChainDashboard() {
       const res = await fetch(`${API_BASE}/api/v1/engagements`, { headers: authHeaders() });
       if (res.ok) {
         const data = await res.json();
-        setEngagements(data);
-        if (data.length > 0 && !activeEngagementId) {
-          setActiveEngagementId(data[0].id);
+        const filtered = data.filter((e: any) => e.audit_type === "supply_chain");
+        setEngagements(filtered);
+        if (filtered.length > 0 && !activeEngagementId) {
+          setActiveEngagementId(filtered[0].id);
         }
       }
     } catch (e) { console.error(e); }

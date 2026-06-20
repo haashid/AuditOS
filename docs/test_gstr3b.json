@@ -1,0 +1,73 @@
+{
+  "gstin": "29ABCDE1234F1Z5",
+  "ret_period": "032024",
+  "sup_details": {
+    "osup_det": {
+      "txval": 1300000.00,
+      "iamt": 99000.00,
+      "camt": 18000.00,
+      "samt": 18000.00,
+      "csamt": 0.00
+    },
+    "osup_zero": {
+      "txval": 0.00,
+      "iamt": 0.00,
+      "camt": 0.00,
+      "samt": 0.00,
+      "csamt": 0.00
+    },
+    "osup_nil_exmp": {
+      "txval": 0.00
+    },
+    "isup_rev": {
+      "txval": 0.00,
+      "iamt": 0.00,
+      "camt": 0.00,
+      "samt": 0.00,
+      "csamt": 0.00
+    }
+  },
+  "itc_elg": {
+    "itc_avl": [
+      {
+        "ty": "IMPG",
+        "iamt": 85000.00,
+        "camt": 16000.00,
+        "samt": 16000.00,
+        "csamt": 0.00
+      }
+    ],
+    "itc_rev": [
+      {
+        "ty": "RUL",
+        "iamt": 0.00,
+        "camt": 0.00,
+        "samt": 0.00,
+        "csamt": 0.00
+      }
+    ],
+    "itc_net": {
+      "iamt": 85000.00,
+      "camt": 16000.00,
+      "samt": 16000.00,
+      "csamt": 0.00
+    },
+    "itc_inelg": [
+      {
+        "ty": "RUL",
+        "iamt": 0.00,
+        "camt": 0.00,
+        "samt": 0.00,
+        "csamt": 0.00
+      }
+    ]
+  },
+  "intr_ltfee": {
+    "intr_details": {
+      "iamt": 0.00,
+      "camt": 0.00,
+      "samt": 0.00,
+      "csamt": 0.00
+    }
+  }
+}

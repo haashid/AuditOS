@@ -42,6 +42,7 @@ from api.v1.activity import router as activity_router
 # Phase 2 models (must import so create_all picks them up)
 import models.invitation  # noqa: F401
 import models.activity_log  # noqa: F401
+import models.internal_audit  # noqa: F401
 
 # Phase 3 models
 import models.tax  # noqa: F401
@@ -117,6 +118,10 @@ app.include_router(esg_audit.router,         prefix="/api/v1", tags=["esg_audit"
 app.include_router(operational_audit.router, prefix="/api/v1", tags=["operational_audit"])
 app.include_router(supply_chain.router,      prefix="/api/v1", tags=["supply_chain_audit"])
 app.include_router(marketplace.router,       prefix="/api/v1", tags=["marketplace"])
+
+# Internal Audit router
+from api.v1 import internal_audit
+app.include_router(internal_audit.router, prefix="/api/v1", tags=["internal_audit"])
 
 
 @app.on_event("startup")

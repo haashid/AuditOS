@@ -1,0 +1,5 @@
+username,full_name,email,department,job_title,system_name,access_level,access_granted_date,last_login_date,is_active,has_mfa
+jdoe,John Doe,jdoe@acme.com,IT,Sysadmin,ActiveDirectory,Admin,2023-01-01,2024-03-01,True,True
+asmith,Alice Smith,asmith@acme.com,Sales,Sales Rep,Salesforce,User,2023-05-15,2024-03-15,True,True
+tclark,Tom Clark,tclark@acme.com,Engineering,Dev,AWS,ReadOnly,2023-08-01,2023-12-01,False,False
+rroe,Richard Roe,rroe@acme.com,Engineering,Lead Dev,GitHub,Developer,2023-02-10,2024-03-10,True,True

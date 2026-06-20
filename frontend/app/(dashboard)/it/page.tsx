@@ -15,6 +15,7 @@ export default function ITAuditPage() {
         hoverBg: "hover:border-cyan-200",
         icon: <Monitor className="w-6 h-6 text-cyan-100" />,
         basePath: "/it",
+        auditType: "it",
       }}
     />
   );

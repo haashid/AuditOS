@@ -62,6 +62,9 @@ import {
   ChevronUp,
   Loader2,
   Download,
+  ClipboardList,
+  Users,
+  Copy,
 } from "lucide-react";
 import Link from "next/link";
 import { RoleGate } from "@/components/RoleGate";
@@ -1584,9 +1587,7 @@ export default function EngagementDetailPage() {
           <TabsTrigger id="tab-findings" value="findings" className="data-[state=active]:bg-blue-50 data-[state=active]:text-slate-900 text-slate-500 text-sm px-4 py-2.5 w-full justify-start rounded-lg transition-colors mt-1 outline-none focus-visible:ring-0">
             <AlertTriangle className="w-4 h-4 mr-2" />Findings
           </TabsTrigger>
-          <TabsTrigger id="tab-workpapers" value="workpapers" className="data-[state=active]:bg-blue-50 data-[state=active]:text-slate-900 text-slate-500 text-sm px-4 py-2.5 w-full justify-start rounded-lg transition-colors mt-1 outline-none focus-visible:ring-0">
-            <ScrollText className="w-4 h-4 mr-2" />Workpapers
-          </TabsTrigger>
+
         </TabsList>
 
         <div className="flex-1 min-w-0 w-full bg-white border border-slate-200 rounded-2xl shadow-xl">

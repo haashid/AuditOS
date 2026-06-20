@@ -16,9 +16,7 @@ export default function TaxAuditWorkspace() {
   useEffect(() => {
     apiListEngagements()
       .then((data) => {
-        // Since tax module might apply to any engagement or specifically tax ones,
-        // we'll just show all active engagements for them to select from.
-        setEngagements(data);
+        setEngagements(data.filter((e) => e.audit_type === "tax"));
       })
       .catch(console.error)
       .finally(() => setLoading(false));

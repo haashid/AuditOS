@@ -1,0 +1,6 @@
+vendor_code,vendor_name,category,criticality,annual_spend
+V001,Acme Corp,IT Hardware,High,500000
+V002,Global Freight,Logistics,Medium,150000
+V003,TechConsult,Services,Low,50000
+V004,SecureSystems,IT Software,High,1200000
+V005,OfficeSuppliesInc,Supplies,Low,10000

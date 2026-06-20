@@ -14,6 +14,7 @@ interface ModuleConfig {
   hoverBg: string;
   icon: React.ReactNode;
   basePath: string;
+  auditType: string;
 }
 
 export default function ModuleEngagementSelector({ config }: { config: ModuleConfig }) {
@@ -23,7 +24,7 @@ export default function ModuleEngagementSelector({ config }: { config: ModuleCon
 
   useEffect(() => {
     apiListEngagements()
-      .then(setEngagements)
+      .then((data) => setEngagements(data.filter((e) => e.audit_type === config.auditType)))
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
