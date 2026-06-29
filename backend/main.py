@@ -123,6 +123,13 @@ app.include_router(marketplace.router,       prefix="/api/v1", tags=["marketplac
 from api.v1 import internal_audit
 app.include_router(internal_audit.router, prefix="/api/v1", tags=["internal_audit"])
 
+# Enhancement Sprint routers (time tracking + observations)
+from api.v1 import time_tracking, observations
+import models.time_entry   # noqa: F401  — ensures create_all picks up time_entries
+import models.observation  # noqa: F401  — ensures create_all picks up observations
+app.include_router(time_tracking.router, prefix="/api/v1", tags=["time_tracking"])
+app.include_router(observations.router,  prefix="/api/v1", tags=["observations"])
+
 
 @app.on_event("startup")
 def on_startup():

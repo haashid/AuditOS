@@ -1,0 +1,6 @@
+﻿transaction_date,account_name,debit_amount,credit_amount,description
+2023-03-01,Revenue,0,800000,Prior year revenue
+2023-03-05,Salaries,600000,0,Payroll March 2023
+2023-03-10,Office Rent,50000,0,Rent Q1
+2023-03-15,Software Subscriptions,20000,0,SaaS costs
+2023-06-01,Revenue,0,700000,Q2 revenue 2023

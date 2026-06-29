@@ -44,4 +44,6 @@ class Transaction(Base):
     is_flagged = Column(Boolean, default=False)
     flag_reasons = Column(JSONB, default=list)
     risk_score = Column(Integer, default=0)
+    # Source tracking — "Prior Year" for comparative data, otherwise NULL
+    source_system = Column(String(100), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
