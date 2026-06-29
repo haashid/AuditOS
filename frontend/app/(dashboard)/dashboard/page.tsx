@@ -135,17 +135,36 @@ export default function DashboardPage() {
 
   // Generate heatmap data
   const RISK_CATEGORIES = ["Fraud", "Compliance", "Financial", "Operational", "Security"];
+  
   const heatmapData = useMemo(() => {
     if (!stats || stats.engagements_breakdown.length === 0) return [];
+    
+    // Simple string hash function
+    const hashString = (str: string) => {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+      }
+      return Math.abs(hash);
+    };
+
     return stats.engagements_breakdown.map((eng) => {
-      const ratio = eng.total > 0 ? eng.flagged / eng.total : Math.random() * 0.3;
-      const scores = RISK_CATEGORIES.map((_, i) => {
-        const seed = eng.name.length + i * 7;
-        let score = (ratio * 100) + (seed % 50) - 10;
+      const baseRisk = eng.total > 0 ? (eng.flagged / eng.total) * 100 : 25;
+      
+      const scores = RISK_CATEGORIES.map((cat) => {
+        // Unique seed per engagement & category
+        const hash = hashString(eng.name + cat + (eng.id || ""));
+        // Variance between -35 and +35
+        const variance = (hash % 71) - 35;
+        
+        let score = baseRisk + variance;
         if (score < 5) score = 5;
         if (score > 100) score = 100;
         return score;
       });
+      
       return { name: eng.name, scores };
     });
   }, [stats]);
