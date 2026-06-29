@@ -183,12 +183,26 @@ function DataSourcesTab({
     setSyncing(type);
     try {
       const token = getToken();
-      const res = await fetch(`${API_BASE}/api/v1/connectors/${type}/sync/${engagementId}`, {
+      let url = `${API_BASE}/api/v1/connectors/${type}/sync/${engagementId}`;
+      let body = undefined;
+      let headers: any = { ...(token ? { Authorization: `Bearer ${token}` } : {}) };
+
+      if (type === "tally") {
+        url = `${API_BASE}/api/v1/connectors/tally/live-sync/${engagementId}`;
+        body = JSON.stringify({ tally_url: "http://host.docker.internal:9000" });
+        headers["Content-Type"] = "application/json";
+      }
+
+      const res = await fetch(url, {
         method: "POST",
-        headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) }
+        headers,
+        body
       });
-      if (!res.ok) throw new Error("Sync failed to start");
-      toast.success(`${type} sync started in background.`);
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Sync failed to start");
+      }
+      toast.success(`${type} sync started successfully.`);
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Sync failed");
     } finally {
