@@ -216,7 +216,7 @@ export default function EngagementsPage() {
                     operational: "operational",
                     supply_chain: "supply-chain"
                   };
-                  const route = routes[eng.audit_type] || "engagements";
+                  const route = routes[eng.audit_type || ""] || "engagements";
                   router.push(`/${route}/${eng.id}`);
                 }}
                 onDelete={(e) => handleDelete(e, eng.id)}

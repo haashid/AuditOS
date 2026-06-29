@@ -527,7 +527,7 @@ function TransactionsTab({ engagementId, onUploaded }: { engagementId: string; o
 
       <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full min-w-[1100px] text-sm">
             <thead>
               <tr className="border-b border-slate-200">
                 {["Date", "Doc No", "Account", "Description", "Debit", "Credit", "Posted By", "Risk", "Flags"].map((h) => (
@@ -580,7 +580,7 @@ function TransactionsTab({ engagementId, onUploaded }: { engagementId: string; o
                       <span className={RISK_COLOR(txn.risk_score)}>{txn.risk_score}</span>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex flex-wrap gap-1 min-w-[120px]">
+                      <div className="flex flex-wrap gap-1 min-w-[180px]">
                         {txn.flag_reasons?.map((r) => (
                           <Badge key={r} variant="outline" className={`text-[9px] px-1.5 py-0 border ${FLAG_BADGE_COLORS[r] || "bg-slate-700 text-slate-600 border-slate-600"}`}>
                             {r}
