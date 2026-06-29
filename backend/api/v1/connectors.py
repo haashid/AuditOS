@@ -647,6 +647,22 @@ def tally_live_sync(
         )
         db.add(txn)
 
+    # Mark Tally as connected for this engagement
+    tally_token = db.query(ConnectorToken).filter(
+        ConnectorToken.engagement_id == engagement_id,
+        ConnectorToken.org_id == current_user.org_id,
+        ConnectorToken.connector_type == "tally"
+    ).first()
+    
+    if not tally_token:
+        tally_token = ConnectorToken(
+            org_id=current_user.org_id,
+            engagement_id=engagement_id,
+            connector_type="tally",
+            is_active=True
+        )
+        db.add(tally_token)
+
     db.commit()
 
     return {
