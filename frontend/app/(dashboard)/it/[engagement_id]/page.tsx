@@ -6,7 +6,8 @@ import { useParams } from "next/navigation";
 import { toast } from "@/hooks/useToast";
 import {
   Monitor, Upload, CheckCircle2, XCircle, AlertTriangle, ChevronDown, ChevronUp,
-  Loader2, FileText, Users, Key, Shield, Download, ArrowLeft
+  Loader2, FileText, Users, Key, Shield, Download, ArrowLeft, ExternalLink, RefreshCw,
+  Cloud
 } from "lucide-react";
 import Link from "next/link";
 
@@ -104,6 +105,11 @@ export default function ITAuditDetailPage() {
   const [changeUploading, setChangeUploading] = useState(false);
   const changeFileInputRef = useRef<HTMLInputElement>(null);
 
+  // Microsoft 365 connector state
+  const [ms365Status, setMs365Status] = useState<"connected" | "not_connected" | "loading">("loading");
+  const [ms365Syncing, setMs365Syncing] = useState(false);
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   const fetchControls = async () => {
     try {
       const res = await fetch(`${API_BASE}/api/v1/it/engagements/${engagementId}/itgc/controls`, { headers: authHeaders() });
@@ -133,6 +139,28 @@ export default function ITAuditDetailPage() {
     fetchControls();
     fetchAccessSummary();
     fetchChangeSummary();
+    fetchMs365Status();
+
+    // Handle redirect back from Microsoft OAuth
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("sync") === "microsoft365") {
+      toast.success("Microsoft 365 connected — syncing users...");
+      // Remove the query param from URL without reload
+      window.history.replaceState({}, "", window.location.pathname);
+      // Poll access summary every 10s until users appear
+      pollingRef.current = setInterval(async () => {
+        const res = await fetch(`${API_BASE}/api/v1/it/engagements/${engagementId}/user-access/summary`, { headers: authHeaders() });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.total_users > 0) {
+            setAccessSummary(data);
+            if (pollingRef.current) clearInterval(pollingRef.current);
+          }
+        }
+      }, 10000);
+    }
+
+    return () => { if (pollingRef.current) clearInterval(pollingRef.current); };
   }, [engagementId]);
 
   const initializeControls = async () => {
@@ -221,6 +249,52 @@ export default function ITAuditDetailPage() {
 
   const downloadReport = () => {
     window.open(`${API_BASE}/api/v1/it/engagements/${engagementId}/itgc/generate-report`, "_blank");
+  };
+
+  const fetchMs365Status = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/v1/connectors/${engagementId}/status`, { headers: authHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        setMs365Status(data.microsoft365 ? "connected" : "not_connected");
+      } else {
+        setMs365Status("not_connected");
+      }
+    } catch { setMs365Status("not_connected"); }
+  };
+
+  const connectMs365 = async () => {
+    try {
+      const res = await fetch(
+        `${API_BASE}/api/v1/connectors/microsoft365/authorize?engagement_id=${engagementId}`,
+        { headers: authHeaders() }
+      );
+      if (!res.ok) {
+        const err = await res.json();
+        toast.error(err.detail || "Failed to start Microsoft 365 connection");
+        return;
+      }
+      const data = await res.json();
+      // MANDATORY: same-tab redirect — Microsoft blocks popups for some tenant security policies
+      window.location.href = data.authorization_url;
+    } catch { toast.error("Failed to connect Microsoft 365"); }
+  };
+
+  const syncMs365Now = async () => {
+    setMs365Syncing(true);
+    try {
+      const res = await fetch(
+        `${API_BASE}/api/v1/connectors/microsoft365/sync/${engagementId}`,
+        { method: "POST", headers: authHeaders() }
+      );
+      if (res.ok) {
+        toast.success("Microsoft 365 sync started — data will appear shortly");
+        setTimeout(() => fetchAccessSummary(), 5000);
+      } else {
+        toast.error("Sync failed");
+      }
+    } catch { toast.error("Sync failed"); }
+    finally { setMs365Syncing(false); }
   };
 
   const grouped: Record<string, Control[]> = {};
@@ -456,24 +530,89 @@ export default function ITAuditDetailPage() {
       {/* User Access Review Tab */}
       {activeTab === "access" && (
         <div className="space-y-6">
-          {/* Upload Area */}
+
+          {/* Data Sources — Microsoft 365 connector card */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="font-semibold text-slate-900 mb-1 flex items-center gap-2">
-              <Users className="w-4 h-4 text-cyan-500" />
-              Upload User Access Data
+            <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+              <Cloud className="w-4 h-4 text-cyan-500" />
+              Data Sources
             </h3>
-            <p className="text-sm text-slate-500 mb-4">
-              Upload a CSV with columns: username, full_name, email, department, job_title, system_name, access_level, access_granted_date, last_login_date, is_active, has_mfa
-            </p>
-            <input ref={fileInputRef} type="file" accept=".csv" className="hidden" onChange={uploadAccessCSV} />
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={accessUploading}
-              className="flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg text-sm font-medium hover:bg-cyan-700 disabled:opacity-50 transition-colors"
-            >
-              {accessUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-              {accessUploading ? "Uploading..." : "Upload CSV"}
-            </button>
+
+            {/* Microsoft 365 Card */}
+            <div className="border border-slate-200 rounded-xl p-5 mb-4 flex flex-col md:flex-row md:items-center gap-4">
+              <div className="flex items-center gap-3 flex-1">
+                {/* Microsoft Logo SVG */}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21" className="w-8 h-8 shrink-0">
+                  <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
+                  <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
+                  <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
+                  <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+                </svg>
+                <div>
+                  <p className="font-semibold text-slate-900 text-sm">Microsoft 365 / Azure AD</p>
+                  {ms365Status === "loading" ? (
+                    <span className="text-xs text-slate-400 flex items-center gap-1">
+                      <Loader2 className="w-3 h-3 animate-spin" /> Checking status...
+                    </span>
+                  ) : ms365Status === "connected" ? (
+                    <span className="text-xs text-emerald-600 flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" /> Connected — pulling from Azure AD
+                    </span>
+                  ) : (
+                    <span className="text-xs text-slate-400 flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full bg-slate-300 inline-block" /> Not Connected
+                    </span>
+                  )}
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Auto-pull user accounts, sign-in activity, and admin roles from your client&apos;s Azure AD tenant.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2 shrink-0">
+                {ms365Status === "connected" ? (
+                  <button
+                    onClick={syncMs365Now}
+                    disabled={ms365Syncing}
+                    className="flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg text-sm font-medium hover:bg-cyan-700 disabled:opacity-50 transition-colors"
+                  >
+                    {ms365Syncing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+                    {ms365Syncing ? "Syncing..." : "Sync Now"}
+                  </button>
+                ) : (
+                  <button
+                    onClick={connectMs365}
+                    className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg text-sm font-medium hover:bg-slate-900 transition-colors"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    Connect Microsoft 365
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Divider with OR */}
+            <div className="flex items-center gap-3 my-4">
+              <div className="flex-1 h-px bg-slate-200" />
+              <span className="text-xs text-slate-400 font-medium">OR (manual fallback)</span>
+              <div className="flex-1 h-px bg-slate-200" />
+            </div>
+
+            {/* Manual CSV Upload */}
+            <div>
+              <p className="text-sm text-slate-600 font-medium mb-2">Manual CSV Upload</p>
+              <p className="text-xs text-slate-400 mb-3">
+                Columns: username, full_name, email, department, job_title, system_name, access_level, last_login_date, is_active, has_mfa
+              </p>
+              <input ref={fileInputRef} type="file" accept=".csv" className="hidden" onChange={uploadAccessCSV} />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={accessUploading}
+                className="flex items-center gap-2 px-4 py-2 border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 disabled:opacity-50 transition-colors"
+              >
+                {accessUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                {accessUploading ? "Uploading..." : "Upload CSV"}
+              </button>
+            </div>
           </div>
 
           {/* Summary Stats */}
@@ -492,6 +631,17 @@ export default function ITAuditDetailPage() {
                   </div>
                 ))}
               </div>
+
+              {/* MS365 MFA note */}
+              {ms365Status === "connected" && accessSummary.total_users > 0 && (
+                <div className="flex items-start gap-2 p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-500">
+                  <Shield className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
+                  <span>
+                    <strong className="text-slate-700">MFA status not available via Graph API</strong> — per-user MFA requires additional calls not included in this build.
+                    Microsoft 365 users show a gray &ldquo;Verify Manually&rdquo; badge in the MFA column. CSV-uploaded users continue to show standard MFA badges.
+                  </span>
+                </div>
+              )}
 
               {/* Flagged Users Table */}
               {accessSummary.flagged_users.length > 0 && (
@@ -532,7 +682,13 @@ export default function ITAuditDetailPage() {
                                 ))}
                               </div>
                             </td>
-                            <td className="px-4 py-3 text-slate-500 text-xs">{u.last_login_date || "Never"}</td>
+                            <td className="px-4 py-3 text-slate-500 text-xs">
+                              {u.last_login_date || (
+                                u.system_name.includes("Microsoft 365")
+                                  ? <span className="text-slate-400 italic">Sign-in data unavailable</span>
+                                  : "Never"
+                              )}
+                            </td>
                           </tr>
                         ))}
                       </tbody>

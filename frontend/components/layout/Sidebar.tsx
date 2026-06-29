@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -151,15 +152,7 @@ export default function Sidebar({ isOpen, setIsOpen }: { isOpen?: boolean; setIs
         <div className="border-t border-slate-100 my-3 ml-2 mr-2" />
         {renderItem({ href: "/marketplace", icon: Briefcase, label: "Audit Marketplace" })}
         
-        {user?.is_superadmin && (
-          <Link
-            href="/admin"
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-purple-600 hover:bg-purple-50 transition-all duration-150 group"
-          >
-            <ShieldCheck className="w-4 h-4 flex-shrink-0" />
-            <span className="flex-1">Superadmin Panel</span>
-          </Link>
-        )}
+
         {renderItem({ href: "/settings", icon: Settings, label: "Settings" })}
       </nav>
 
@@ -178,6 +171,9 @@ export default function Sidebar({ isOpen, setIsOpen }: { isOpen?: boolean; setIs
             </p>
             <p className="text-[10px] text-slate-400 truncate">{roleLabel}</p>
           </div>
+        </div>
+        <div className="flex items-center gap-2 mb-1">
+          <ThemeToggle />
         </div>
         <button
           id="logout-button"

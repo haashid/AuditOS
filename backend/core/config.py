@@ -42,6 +42,17 @@ class Settings(BaseSettings):
     ZOHO_ACCOUNTS_URL: str = "https://accounts.zoho.in"
     ZOHO_API_BASE: str = "https://www.zohoapis.in/books/v3"
 
+    # Microsoft 365 / Azure AD Connector (IT Audit module)
+    MS365_CLIENT_ID: str = ""
+    MS365_CLIENT_SECRET: str = ""
+    MS365_REDIRECT_URI: str = "http://localhost:8000/api/v1/connectors/microsoft365/callback"
+    MS365_AUTHORITY: str = "https://login.microsoftonline.com/common"
+
+    # Jira Finding Sync Connector (org-level, not per-engagement)
+    JIRA_CLIENT_ID: str = ""
+    JIRA_CLIENT_SECRET: str = ""
+    JIRA_REDIRECT_URI: str = "http://localhost:8000/api/v1/connectors/jira/callback"
+
     class Config:
         env_file = ".env"
         extra = "ignore"

@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import Sidebar from "@/components/layout/Sidebar";
 import { Menu, Bell, Search } from "lucide-react";
 import Image from "next/image";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 export default function DashboardLayout({
   children,
@@ -32,7 +33,7 @@ export default function DashboardLayout({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f8fafc]">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
           <div className="w-8 h-8 border-2 border-blue-100 border-t-blue-600 rounded-full animate-spin" />
           <p className="text-slate-500 text-sm font-medium">Loading AuditOS...</p>
@@ -44,14 +45,14 @@ export default function DashboardLayout({
   if (!user) return null;
 
   return (
-    <div className="flex min-h-screen bg-[#f8fafc] flex-col lg:flex-row">
+    <div className="flex min-h-screen bg-background flex-col lg:flex-row">
       {/* Mobile Topbar */}
-      <header className="lg:hidden flex items-center justify-between bg-white border-b border-slate-200 px-4 h-16 shrink-0 z-30 relative">
+      <header className="lg:hidden flex items-center justify-between bg-surface border-b border-border px-4 h-16 shrink-0 z-30 relative">
         <div className="flex items-center">
           <div className="w-10 h-10 flex items-center justify-center">
             <Image src="/logo.png" alt="AuditOS Logo" width={40} height={40} className="w-full h-full object-contain scale-[1.7]" />
           </div>
-          <span className="text-lg font-bold tracking-tight text-slate-900 -ml-1">Audit<span className="text-blue-600">OS</span></span>
+          <span className="text-lg font-bold tracking-tight text-foreground -ml-1">Audit<span className="text-blue-600">OS</span></span>
         </div>
         
         <div className="flex items-center gap-3">
@@ -62,8 +63,9 @@ export default function DashboardLayout({
             <Bell className="w-5 h-5" />
             <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-white" />
           </button>
+          <ThemeToggle />
           <button 
-            className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg ml-1"
+            className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg ml-1"
             onClick={() => setIsMobileMenuOpen(true)}
           >
             <Menu className="w-6 h-6" />

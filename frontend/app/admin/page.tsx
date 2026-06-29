@@ -88,11 +88,11 @@ export default function SuperadminPage() {
   ];
 
   if (isLoading || !user || !user.is_superadmin) {
-    return <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center">Loading...</div>;
+    return <div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">

@@ -21,7 +21,7 @@ def get_module_status(
         Organization.id == current_user.org_id
     ).first()
 
-    active_modules = org.modules or ["financial_audit"]
+    active_modules = list(AVAILABLE_MODULES.keys())
 
     return {
         "active_modules": active_modules,

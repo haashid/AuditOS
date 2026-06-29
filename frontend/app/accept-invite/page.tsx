@@ -139,7 +139,7 @@ function AcceptInviteForm() {
 
 export default function AcceptInvitePage() {
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="card-elevated p-8">
           <Suspense fallback={<div className="text-center text-slate-400">Loading...</div>}>

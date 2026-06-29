@@ -30,6 +30,10 @@ class Finding(Base):
 
     ai_generated = Column(Boolean, default=False)
 
+    # Jira Finding Sync — populated after "Push to Jira" action
+    jira_issue_key = Column(String(50), nullable=True)   # e.g. "AUDIT-123"
+    jira_issue_url = Column(String(500), nullable=True)  # e.g. "https://firm.atlassian.net/browse/AUDIT-123"
+
     created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

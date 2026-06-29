@@ -935,6 +935,61 @@ function FindingsTab({ engagementId }: { engagementId: string }) {
   });
   const [submitting, setSubmitting] = useState(false);
 
+  // Jira sync state
+  const [jiraConnected, setJiraConnected] = useState(false);
+  const [jiraProjectKey, setJiraProjectKey] = useState("");
+  const [jiraSyncing, setJiraSyncing] = useState<string | null>(null);
+
+  // Check if Jira is connected for this org
+  useEffect(() => {
+    const token = getToken();
+    fetch(`${API_BASE}/api/v1/connectors/${engagementId}/status`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d) setJiraConnected(!!d.jira); })
+      .catch(() => {});
+  }, [engagementId]);
+
+  const handlePushToJira = async (findingId: string) => {
+    if (!jiraConnected) {
+      toast.error("Connect Jira in Settings → Integrations first");
+      return;
+    }
+    if (!jiraProjectKey.trim()) {
+      toast.error("Enter a Jira project key (e.g. AUDIT)");
+      return;
+    }
+    setJiraSyncing(findingId);
+    try {
+      const token = getToken();
+      const res = await fetch(`${API_BASE}/api/v1/findings/${findingId}/sync-to-jira`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ project_key: jiraProjectKey.trim().toUpperCase() })
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: "Sync failed" }));
+        toast.error(err.detail || "Sync failed");
+        return;
+      }
+      const data = await res.json();
+      // Update the finding in local state with the new Jira fields
+      setFindings(prev => prev.map(f => f.id === findingId
+        ? { ...f, jira_issue_key: data.jira_issue_key, jira_issue_url: data.jira_issue_url }
+        : f
+      ));
+      toast.success(`Pushed to Jira as ${data.jira_issue_key}`);
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Sync failed");
+    } finally {
+      setJiraSyncing(null);
+    }
+  };
+
   const load = useCallback(() => {
     setLoading(true);
     const offset = (page - 1) * limit;
@@ -1159,6 +1214,56 @@ function FindingsTab({ engagementId }: { engagementId: string }) {
                         return btn;
                       })}
                     </div>
+                  </div>
+
+                  {/* Jira Sync */}
+                  <div className="pt-2 border-t border-slate-100">
+                    {(f as any).jira_issue_key ? (
+                      <div className="flex items-center gap-2 text-xs">
+                        <span className="text-slate-400">🔗 Synced:</span>
+                        <span className="font-mono font-semibold text-blue-600">{(f as any).jira_issue_key}</span>
+                        {(f as any).jira_issue_url && (
+                          <a
+                            href={(f as any).jira_issue_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-500 hover:underline flex items-center gap-0.5"
+                          >
+                            View in Jira ↗
+                          </a>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs text-slate-400">🔗 Not synced to Jira</span>
+                        {jiraConnected ? (
+                          <>
+                            <input
+                              type="text"
+                              placeholder="Project key (e.g. AUDIT)"
+                              value={jiraProjectKey}
+                              onChange={e => setJiraProjectKey(e.target.value)}
+                              className="border border-slate-200 rounded px-2 py-1 text-xs w-36 focus:outline-none focus:border-blue-300"
+                            />
+                            <button
+                              id={`push-jira-${f.id}`}
+                              onClick={() => handlePushToJira(f.id)}
+                              disabled={jiraSyncing === f.id || !jiraProjectKey.trim()}
+                              className="flex items-center gap-1 px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                            >
+                              {jiraSyncing === f.id ? (
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                              ) : null}
+                              Push to Jira →
+                            </button>
+                          </>
+                        ) : (
+                          <span className="text-[10px] text-slate-400 italic">
+                            Connect Jira in Settings → Integrations to enable
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

@@ -91,7 +91,8 @@ def require_module(module_key: str):
         if not org:
             raise HTTPException(status_code=404, detail="Organization not found")
 
-        active_modules = org.modules or ["financial_audit"]
+        from core.modules import AVAILABLE_MODULES
+        active_modules = list(AVAILABLE_MODULES.keys())
         if module_key not in active_modules:
             raise HTTPException(
                 status_code=403,

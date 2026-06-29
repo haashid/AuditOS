@@ -169,4 +169,7 @@ def _serialize_finding(f: Finding) -> dict:
         "ai_generated": f.ai_generated,
         "due_date": f.due_date.isoformat() if f.due_date else None,
         "created_at": f.created_at.isoformat() if f.created_at else None,
+        # Jira sync state — null until "Push to Jira" is triggered
+        "jira_issue_key": f.jira_issue_key,
+        "jira_issue_url": f.jira_issue_url,
     }

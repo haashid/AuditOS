@@ -2,12 +2,15 @@
 
 import { useAuth } from "@/lib/auth-context";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { User, Building2, Link as LinkIcon, Save, Layers, CheckCircle2, CircleDashed } from "lucide-react";
+import { User, Building2, Link as LinkIcon, Save, Layers, CheckCircle2, CircleDashed, ExternalLink } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "@/hooks/useToast";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const getToken = () => typeof window !== "undefined" ? localStorage.getItem("auditos_token") : null;
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
@@ -28,6 +31,58 @@ export default function SettingsPage() {
   
   const [tallyClientId, setTallyClientId] = useState("tally_live_v1");
   const [tallyClientSecret, setTallyClientSecret] = useState("••••••••••••••••");
+
+  // Jira connection state
+  const [jiraConnected, setJiraConnected] = useState(false);
+  const [jiraConnecting, setJiraConnecting] = useState(false);
+  const [jiraProjects, setJiraProjects] = useState<{key: string; name: string}[]>([]);
+  const [jiraDefaultProject, setJiraDefaultProject] = useState("");
+
+  useEffect(() => {
+    // Check if already connected on page load
+    const token = getToken();
+    if (!token) return;
+    fetch(`${API_BASE}/api/v1/connectors/jira/projects`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(r => {
+        if (r.ok) {
+          setJiraConnected(true);
+          return r.json();
+        }
+        return [];
+      })
+      .then((projects: {key: string; name: string}[]) => {
+        if (projects.length) setJiraProjects(projects);
+      })
+      .catch(() => {});
+
+    // Handle redirect back from Jira OAuth (?tab=integrations&jira=connected)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("jira") === "connected") {
+      toast.success("Jira connected successfully!");
+      window.history.replaceState({}, "", window.location.pathname);
+      setJiraConnected(true);
+    }
+  }, []);
+
+  const connectJira = async () => {
+    setJiraConnecting(true);
+    try {
+      const token = getToken();
+      const res = await fetch(`${API_BASE}/api/v1/connectors/jira/authorize`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
+      if (!res.ok) {
+        toast.error("Failed to start Jira connection");
+        return;
+      }
+      const data = await res.json();
+      // Same-tab redirect for OAuth
+      window.location.href = data.authorization_url;
+    } catch { toast.error("Failed to connect Jira"); }
+    finally { setJiraConnecting(false); }
+  };
 
   const handleSaveIntegrations = () => {
     setLoading(true);
@@ -222,6 +277,67 @@ export default function SettingsPage() {
               </div>
             </div>
 
+          </CardContent>
+        </Card>
+
+        {/* Jira Integrations card */}
+        <Card className="bg-white border-slate-200 shadow-sm">
+          <CardHeader className="pb-4 border-b border-slate-100">
+            <div>
+              <CardTitle className="text-base text-slate-900 flex items-center gap-2">
+                {/* Jira Logo */}
+                <svg viewBox="0 0 32 32" className="w-4 h-4" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16 0C7.163 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0zm7.07 23.01l-7.07-7.07-7.07 7.07L6.86 21 16 11.86 25.14 21l-2.07 2.01z" fill="#0052CC"/>
+                </svg>
+                Jira Integration
+              </CardTitle>
+              <CardDescription className="mt-1.5">
+                Push audit findings directly to your team&apos;s Jira board for remediation tracking.
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6">
+            {jiraConnected ? (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <span className="font-medium text-emerald-700">Jira Connected</span>
+                </div>
+                {jiraProjects.length > 0 && (
+                  <div className="space-y-2">
+                    <Label className="text-xs text-slate-500 uppercase tracking-wider">Default Project</Label>
+                    <select
+                      value={jiraDefaultProject}
+                      onChange={e => setJiraDefaultProject(e.target.value)}
+                      className="w-full border border-slate-200 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:border-blue-300"
+                    >
+                      <option value="">Select a default project...</option>
+                      {jiraProjects.map(p => (
+                        <option key={p.key} value={p.key}>{p.name} ({p.key})</option>
+                      ))}
+                    </select>
+                    <p className="text-xs text-slate-400">Used as the default when pushing findings to Jira.</p>
+                  </div>
+                )}
+                <p className="text-xs text-slate-500">
+                  To push a finding, expand it in the Findings tab and click <strong>Push to Jira →</strong>.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <p className="text-sm text-slate-500">
+                  Connect your Jira account to push findings directly to your team&apos;s board. One connection serves all engagements for your firm.
+                </p>
+                <Button
+                  onClick={connectJira}
+                  disabled={jiraConnecting}
+                  className="bg-[#0052CC] hover:bg-[#0041A3] text-white gap-2"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  {jiraConnecting ? "Connecting..." : "Connect Jira"}
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
 
