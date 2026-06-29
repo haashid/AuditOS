@@ -198,11 +198,20 @@ function DataSourcesTab({
         headers,
         body
       });
+      
+      const data = await res.json().catch(() => ({}));
+      
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.detail || "Sync failed to start");
+        throw new Error(data.detail || "Sync failed to start");
       }
-      toast.success(`${type} sync started successfully.`);
+      
+      if (data.total_rows !== undefined) {
+        toast.success(`Synced ${data.total_rows} rows from ${type} (${data.flagged_rows} flagged)`);
+      } else {
+        toast.success(`${type} sync started successfully.`);
+      }
+      
+      onUploaded();
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Sync failed");
     } finally {
