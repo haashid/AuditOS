@@ -72,7 +72,7 @@ export function AddControlModal({ isOpen, onClose, onAdded }: any) {
           <div className="space-y-2">
             <Label>Frequency</Label>
             <select 
-              className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+              className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:border-ring"
               value={formData.frequency}
               onChange={(e) => setFormData({...formData, frequency: e.target.value})}
             >

@@ -28,6 +28,15 @@
   --color-foreground: var(--tw-slate-900);
   --color-foreground-muted: var(--tw-slate-500);
   --color-card: var(--tw-white);
+  --color-card-foreground: var(--tw-slate-900);
+  --color-input: var(--tw-slate-200);
+  --color-ring: var(--color-primary);
+  --color-muted: var(--tw-slate-100);
+  --color-muted-foreground: var(--tw-slate-500);
+  --color-popover: var(--tw-white);
+  --color-popover-foreground: var(--tw-slate-900);
+  --color-destructive: var(--color-danger);
+  --color-destructive-foreground: var(--tw-white);
 
   /* Blues */
   --color-primary: #2563eb;
