@@ -205,7 +205,20 @@ export default function EngagementsPage() {
               <EngagementRow
                 key={eng.id}
                 engagement={eng}
-                onClick={() => router.push(`/engagements/${eng.id}`)}
+                onClick={() => {
+                  const routes: Record<string, string> = {
+                    financial: "financial",
+                    internal: "internal",
+                    tax: "tax",
+                    it: "it",
+                    cyber: "cyber",
+                    esg: "esg",
+                    operational: "operational",
+                    supply_chain: "supply-chain"
+                  };
+                  const route = routes[eng.audit_type] || "engagements";
+                  router.push(`/${route}/${eng.id}`);
+                }}
                 onDelete={(e) => handleDelete(e, eng.id)}
               />
             ))}
