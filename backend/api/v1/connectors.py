@@ -145,7 +145,7 @@ def sync_quickbooks(
 def sync_quickbooks_transactions(connector_id: str, engagement_id: str, org_id: str):
     """Background task: pull QB transactions and insert into DB."""
     from core.database import SessionLocal
-    from ai.flag_engine import flag_transaction
+    from services.flag_engine import flag_transaction
     from models.engagement import Transaction
 
     db = SessionLocal()
@@ -291,7 +291,7 @@ def sync_xero(
 def sync_xero_transactions(connector_id: str, engagement_id: str, org_id: str):
     """Background task: pull Xero transactions and insert into DB."""
     from core.database import SessionLocal
-    from ai.flag_engine import flag_transaction
+    from services.flag_engine import flag_transaction
     from models.engagement import Transaction
 
     db = SessionLocal()
@@ -437,7 +437,7 @@ def zoho_callback(
 def sync_zoho_transactions(connector_id: str, engagement_id: str, org_id: str):
     """Background task: pull Zoho transactions and insert into DB."""
     from core.database import SessionLocal
-    from ai.flag_engine import flag_transaction
+    from services.flag_engine import flag_transaction
     from models.engagement import Transaction
 
     db = SessionLocal()
@@ -543,7 +543,7 @@ async def upload_tally_xml(
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-    from ai.flag_engine import flag_transaction
+    from services.flag_engine import flag_transaction
     from models.engagement import Transaction
 
     flagged_count = 0
@@ -619,7 +619,7 @@ def tally_live_sync(
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-    from ai.flag_engine import flag_transaction
+    from services.flag_engine import flag_transaction
     from models.engagement import Transaction
 
     flagged_count = 0
