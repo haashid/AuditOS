@@ -127,7 +127,6 @@ def sync_quickbooks(
     txn = Transaction(
         org_id=current_user.org_id,
         engagement_id=engagement_id,
-        source_system="QuickBooks",
         transaction_date=date.today(),
         account_name="Office Supplies",
         debit_amount=random.randint(100, 2000),
@@ -171,7 +170,6 @@ def sync_quickbooks_transactions(connector_id: str, engagement_id: str, org_id: 
             txn = Transaction(
                 org_id=org_id,
                 engagement_id=engagement_id,
-                source_system="QuickBooks",
                 transaction_date=txn_dict.get("transaction_date"),
                 document_number=txn_dict.get("document_number"),
                 account_code=txn_dict.get("account_code"),
@@ -274,7 +272,6 @@ def sync_xero(
     txn = Transaction(
         org_id=current_user.org_id,
         engagement_id=engagement_id,
-        source_system="Xero",
         transaction_date=date.today(),
         account_name="Travel Expenses",
         debit_amount=random.randint(50, 1000),
@@ -317,7 +314,6 @@ def sync_xero_transactions(connector_id: str, engagement_id: str, org_id: str):
             txn = Transaction(
                 org_id=org_id,
                 engagement_id=engagement_id,
-                source_system="Xero",
                 transaction_date=txn_dict.get("transaction_date"),
                 document_number=txn_dict.get("document_number"),
                 account_code=txn_dict.get("account_code"),
@@ -461,7 +457,6 @@ def sync_zoho_transactions(connector_id: str, engagement_id: str, org_id: str):
             txn = Transaction(
                 org_id=org_id,
                 engagement_id=engagement_id,
-                source_system="Zoho Books",
                 transaction_date=txn_dict.get("transaction_date"),
                 document_number=txn_dict.get("document_number"),
                 account_code=txn_dict.get("account_code"),
@@ -562,7 +557,6 @@ async def upload_tally_xml(
         txn = Transaction(
             org_id=current_user.org_id,
             engagement_id=engagement_id,
-            source_system="Tally (XML Import)",
             transaction_date=txn_dict.get("transaction_date"),
             document_number=txn_dict.get("document_number"),
             account_code=txn_dict.get("account_code", ""),
@@ -638,7 +632,6 @@ def tally_live_sync(
         txn = Transaction(
             org_id=current_user.org_id,
             engagement_id=engagement_id,
-            source_system="Tally (Live)",
             transaction_date=txn_dict.get("transaction_date"),
             document_number=txn_dict.get("document_number"),
             account_code="",
@@ -677,7 +670,6 @@ def sync_tally_manual(
     txn = Transaction(
         org_id=current_user.org_id,
         engagement_id=engagement_id,
-        source_system="Tally Prime",
         transaction_date=date.today(),
         account_name="Vendor Payables",
         debit_amount=random.randint(1000, 10000),
